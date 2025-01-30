@@ -2,18 +2,21 @@
 
 Deadlines:
 
-Eddy:
-
 1) subfunctions.py containing all of the following function definitions
-a) tau_dcmotor
+
+
+Eddy:
+a) tau_dcmotor DONE
 b) get_gear_ratio
 c) get_mass
 d) F_rolling
+
+Eimaan:
 e) F_gravity
 f) F_drive
 g) F_net
 
-DUE: Jan 29
+DUE: Feb 2nd
 
 
 2) Script Files
@@ -27,7 +30,7 @@ c) analysis_terrain_slope.py
 d) analysis_rolling_resistance.py
 e) analysis_combined_terrain.py
 
-DUE: Feb 10
+DUE: Feb 6
 
 Eimaan:
 3) Answers to questions and requested figures, in a file called Project1.pdf.
