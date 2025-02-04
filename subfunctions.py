@@ -64,9 +64,9 @@ from scipy import erf
 
 
 def tau_dcmotor(omega, motor):
-    torque_stall = rover['wheel_assembly']['motor']['torque_stall']
-    tauNoLoad = rover['wheel_assembly']['motor']['torque_noload']
-    omegaNoLoad = rover['wheel_assembly']['motor']['speed_noload']
+    torque_stall = motor['torque_stall']
+    tauNoLoad = motor['torque_noload']
+    omegaNoLoad = motor['speed_noload']
     #checking for errors in input
     if (type(omega) is not int) and (type(omega) is not isinstance(motor, np.ndarray)):
         raise Exception('<omega is not vector or scalar>')
