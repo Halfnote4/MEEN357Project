@@ -73,9 +73,9 @@ def tau_dcmotor(omega, motor):
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
     #verifying edge/corner cases
-    if omega > omegaNoLoad:
+    if np.any(omega) > omegaNoLoad:
         tau = 0
-    if omega <= 0:
+    if np.any(omega) <= 0:
         tau = torque_stall
     else:
         #calculating tau from 2.1 formula
@@ -130,7 +130,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
     
     if (type(omega) is not int) and not isinstance(omega, np.ndarray):
         raise Exception('<omega is not vector or scalar>')      
-    if (type(terrain_angle) is not int) and (type(terrain_angle) is not isinstance(terrain_angle, np.ndarray)):
+    if (type(terrain_angle) is not int) and not isinstance(terrain_angle, np.ndarray):
         raise Exception('<terrain_angle is not vector or scalar>')  
     if type(rover) is not dict:
         raise Exception('<Rover input is not a dict>')
@@ -141,7 +141,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
     
     #b - verify bounds
     
-    if terrain_angle < -75 and terrain_angle > 75:
+    if np.any(terrain_angle) < -75 and np.any(terrain_angle) > 75:
         raise Exception('<Terrain_angle not in bounds')    
     
     Fn = get_mass(rover)*planet['g']*np.cos(np.degrees(terrain_angle))
