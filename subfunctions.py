@@ -61,7 +61,7 @@ def tau_dcmotor(omega, motor):
     tauNoLoad = motor['torque_noload']
     omegaNoLoad = motor['speed_noload']
     #checking for errors in input
-    if (type(omega) is not int) and (type(omega) is not isinstance(omega, np.ndarray)):
+    if (type(omega) is not int) and not isinstance(omega, np.ndarray):
         raise Exception('<omega is not vector or scalar>')
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
@@ -121,7 +121,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
     
     #a/c - verify scalars or vectors of same size and dicts
     
-    if (type(omega) is not int) and (type(omega) is not isinstance(omega, np.ndarray)):
+    if (type(omega) is not int) and not isinstance(omega, np.ndarray):
         raise Exception('<omega is not vector or scalar>')      
     if (type(terrain_angle) is not int) and (type(terrain_angle) is not isinstance(terrain_angle, np.ndarray)):
         raise Exception('<terrain_angle is not vector or scalar>')  
