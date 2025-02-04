@@ -85,7 +85,7 @@ def get_gear_ratio(speed_reducer):
     
     typeo = rover['wheel_assembly']['speed_reducer']['type']
     
-    if typeo is not 'reverted':
+    if typeo != 'reverted':
         raise Exception('<Invalid type called')
     
     Ng = (gear/pinion)**2
@@ -192,8 +192,6 @@ def F_drive(omega, rover):
     return Fd
 
 
-    
-
 def F_net(omega, terrain_angle, rover, planet, Crr):
     # validate thatfirst two inputs are scalars or vectors
     if (type(omega) is not int) and (not isinstance(omega, np.ndarray)):
@@ -229,3 +227,4 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
     Fnet = Fd + Fg - Fr  
 
     return Fnet
+
