@@ -60,7 +60,7 @@ planet = {
 
 
 import numpy as np
-import scipy
+from scipy.special import erf
 
 
 def tau_dcmotor(omega, motor):
@@ -148,7 +148,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
     
     Frr_simple = Crr*Fn
     
-    omega_out = omega/get_gear_ratio(rover)
+    omega_out = omega/get_gear_ratio(speed_reducer)
     
     v_rover = rover['wheel_assembly']['wheel']['radius']*omega_out
     
