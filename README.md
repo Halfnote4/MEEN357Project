@@ -16,7 +16,7 @@ e) F_gravity
 f) F_drive
 g) F_net
 
-DUE: Feb 2nd
+DUE: Feb 2nd done
 
 
 2) Script Files
