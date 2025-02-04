@@ -195,7 +195,7 @@ def F_drive(omega, rover):
     omega = np.atleast_1d(omega)
 
     # Compute the drive force,
-    Fd = 6 * get_gear_ratio(rover) * tau_dcmotor(omega, rover) / rover['wheel_radius']
+    Fd = 6 * get_gear_ratio(rover) * tau_dcmotor(omega, motor) / rover['wheel_radius']
 
     return Fd
 
