@@ -149,15 +149,83 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
     return Frr
 
 
+def F_gravity(terrain_angle, rover, planet):
+    # validate first input is scalar or vector
+    if not isinstance(terrain_angle, (int, float, np.ndarray)):
+        raise Exception('First input must be a scalar or vector.')
+
+    # all elements of the first argument are between -75 and +75 degrees
+    terrain_angle_array = np.asarray(terrain_angle)
+    if np.any((terrain_angle_array < -75) | (terrain_angle_array > 75)):
+        raise Exception('<Terrain_angle not in bounds>')
+
+    # validate last two inputs are dictionaries
+    if not isinstance(rover, dict):
+        raise Exception('Second input must be a dictionary.')
+    if not isinstance(planet, dict):
+        raise Exception('Third input must be a dictionary.')
+
+    #calculate Fg
+    mass = get_mass(rover)  # Call get mass
+    angle_rad = np.deg2rad(terrain_angle)  # angle to radians
+    Fgt = -mass * planet['g'] * np.sin(angle_rad)  # Apply formula
+
+    return Fgt
 
 
 
+def F_drive(omega, rover):
+    #validate first two inputs are scalars or vectors
+    if (type(omega) is not int) and (not isinstance(omega, np.ndarray)):
+        raise Exception('<omega is not vector or scalar>')
+    
+    # validate second input is a dict
+    if not isinstance(rover, dict): 
+        raise Exception('Second input must be a dictionary.')
 
-# def F_gravity(terrain_angle, rover, planet):
-#     return Fgt
+    # vectorization
+    omega = np.atleast_1d(omega)
 
-# def F_drive(omega, rover):
-#     return Fd
+    # Compute the drive force,
+    Fd = 6 * get_gear_ratio(rover) * tau_dcmotor(omega, rover) / rover['wheel_radius']
 
-# def F_net(omega, terrain_angle, rover, planet, Crr):
-#     return Fnet
+    return Fd
+
+
+    
+
+def F_net(omega, terrain_angle, rover, planet, Crr):
+    # validate thatfirst two inputs are scalars or vectors
+    if (type(omega) is not int) and (not isinstance(omega, np.ndarray)):
+        raise Exception('<omega is not vector or scalar>')
+    if (type(terrain_angle) is not int) and (not isinstance(terrain_angle, np.ndarray)):
+        raise Exception('<terrain angle is not vector or scalar>')
+
+    # validate that both are vectors and have the same size
+    if isinstance(omega, np.ndarray) and isinstance(terrain_angle, np.ndarray):
+        if omega.shape != terrain_angle.shape:
+            raise Exception('Omega and terrain angle must be vectors of the same size.')
+
+    # validate all elements of terrain_angle are between -75 and +75 degrees
+    if np.any((np.asarray(terrain_angle) < -75) | (np.asarray(terrain_angle) > 75)):
+        raise Exception('<Terrain angle not in bounds>')
+
+    # validate rover and planet are dictionaries
+    if type(rover) is not dict:
+        raise Exception('<Rover input is not a dict>')
+    if type(planet) is not dict:
+        raise Exception('<Planet input is not a dict>')
+
+    #Validate Crr is a positive scalar
+    if (type(Crr) is not int) and Crr < 0:
+        raise Exception('<Crr is not a positive scalar>')
+
+    # calc forces
+    Fd = F_drive(omega, rover)                 
+    Fg = F_gravity(terrain_angle, rover, planet) 
+    Fr = F_rolling(terrain_angle, rover, planet, Crr)  
+
+    #calc net force
+    Fnet = Fd + Fg - Fr  
+
+    return Fnet
