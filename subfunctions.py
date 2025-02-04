@@ -6,28 +6,41 @@ all necessary functions for Part 1 of Project for MEEN 357 - Spring 2025
 
 # Constants for Mars Rover Calculations
 # Nested dictionary of the rover
+speed_reducer= {
+    'type': 'reverted',
+    'diam_pinion': 0.04,  # m
+    'diam_gear': 0.07,    # m
+    'mass': 1.5           # kg
+}
+
+wheel= {
+    'radius': 0.30,  # m
+    'mass': 1.0      # kg
+}
+
+motor= {
+    'torque_stall': 170,    # N·m
+    'torque_noload': 0,     # N·m
+    'speed_noload': 3.80,   # rad/s
+    'mass': 5.0             # kg
+}
+
+chassis= {
+    'mass': 659  # kg
+}
+
+wheel_assembly = {
+    'wheel': wheel,
+    'speed_reducer': speed_reducer,
+    'motor': motor
+}
+
+
 rover = {
-    'wheel_assembly': {
-        'wheel': {
-            'radius': 0.30,  # m
-            'mass': 1.0      # kg
-        },
-        'speed_reducer': {
-            'type': 'reverted',
-            'diam_pinion': 0.04,  # m
-            'diam_gear': 0.07,    # m
-            'mass': 1.5           # kg
-        },
-        'motor': {
-            'torque_stall': 170,    # N·m
-            'torque_noload': 0,     # N·m
-            'speed_noload': 3.80,   # rad/s
-            'mass': 5.0             # kg
-        }
-    },
-    'chassis': {
-        'mass': 659  # kg
-    },
+    'wheel_assembly': wheel_assembly
+    ,
+    'chassis': chassis
+    ,
     'science_payload': {
         'mass': 75  # kg
     },
@@ -36,12 +49,7 @@ rover = {
     }
 }
 
-speed_reducer= {
-    'type': 'reverted',
-    'diam_pinion': 0.04,  # m
-    'diam_gear': 0.07,    # m
-    'mass': 1.5           # kg
-}
+
 
 # Planet constants
 planet = {
@@ -52,7 +60,6 @@ planet = {
 
 
 import numpy as np
-
 import scipy as sp
 
 
@@ -81,10 +88,10 @@ def get_gear_ratio(speed_reducer):
     if type(speed_reducer) is not dict:
         raise Exception('<Speed reducer input is not a dict>')
     
-    pinion = rover['wheel_assembly']['speed_reducer']['diam_pinion']
-    gear = rover['wheel_assembly']['speed_reducer']['diam_gear']
+    pinion = speed_reducer['diam_pinion']
+    gear = speed_reducer['diam_gear']
     
-    typeo = rover['wheel_assembly']['speed_reducer']['type']
+    typeo = speed_reducer['type']
     
     if typeo != 'reverted':
         raise Exception('<Invalid type called')
@@ -141,7 +148,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
     
     Frr_simple = Crr*Fn
     
-    omega_out = omega/get_gear_ratio(rover)
+    omega_out = omega/get_gear_ratio(speed_reducer)
     
     v_rover = rover['wheel_assembly']['wheel']['radius']*omega_out
     
@@ -207,7 +214,7 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
 
     # validate all elements of terrain_angle are between -75 and +75 degrees
     if np.any((np.asarray(terrain_angle) < -75) | (np.asarray(terrain_angle) > 75)):
-        raise Exception('<Terrain angle not in bounds between -75 and 75 degrees>')
+        raise Exception('<Terrain angle not in bounds>')
 
     # validate rover and planet are dictionaries
     if type(rover) is not dict:
@@ -228,4 +235,3 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
     Fnet = Fd + Fg - Fr  
 
     return Fnet
-
