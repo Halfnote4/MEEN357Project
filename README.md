@@ -6,7 +6,7 @@ Deadlines:
 
 
 Eddy:
-a) tau_dcmotor DONE
+a) tau_dcmotor
 b) get_gear_ratio
 c) get_mass
 d) F_rolling
@@ -16,7 +16,7 @@ e) F_gravity
 f) F_drive
 g) F_net
 
-DUE: Feb 2nd done
+DUE: Feb 2nd  - DONE!
 
 
 2) Script Files
@@ -30,9 +30,9 @@ c) analysis_terrain_slope.py
 d) analysis_rolling_resistance.py
 e) analysis_combined_terrain.py
 
-DUE: Feb 6
+DUE: Feb 6 NIGHT
 
-Eimaan:
+Eimaan/Eddy:
 3) Answers to questions and requested figures, in a file called Project1.pdf.
 4) Collaboration statement, in a file called collaboration.pdf. Inform us if you
 have consulted with any other teams on this project or used AI tools.
