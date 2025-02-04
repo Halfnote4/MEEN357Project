@@ -60,7 +60,7 @@ planet = {
 
 
 import numpy as np
-from scipy import erf
+import scipy as sp
 
 
 def tau_dcmotor(omega, motor):
@@ -68,7 +68,7 @@ def tau_dcmotor(omega, motor):
     tauNoLoad = motor['torque_noload']
     omegaNoLoad = motor['speed_noload']
     #checking for errors in input
-    if (type(omega) is not int) and (type(omega) is not isinstance(motor, np.ndarray)):
+    if (type(omega) is not int) and (type(omega) is not isinstance(omega, np.ndarray)):
         raise Exception('<omega is not vector or scalar>')
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
@@ -152,7 +152,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
     
     v_rover = rover['wheel_assembly']['wheel']['radius']*omega_out
     
-    Frr = erf(40*v_rover)*Frr_simple
+    Frr = sp.erf(40*v_rover)*Frr_simple
     
     return Frr
 
