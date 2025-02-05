@@ -65,8 +65,8 @@ def tau_dcmotor(omega, motor):
     tauNoLoad = motor['torque_noload']
     omegaNoLoad = motor['speed_noload']
     #checking for errors in input
-    if not isinstance(omega, (int, float, np.ndarray)):
-        raise Exception('<omega is not vector or scalar>')
+    if not isinstance(omega, (int, float, np.ndarray)) and not isinstance(np.any(omega), (int,float)):
+        raise Exception('<Omega is not a valid vector or scalar>')
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
     
