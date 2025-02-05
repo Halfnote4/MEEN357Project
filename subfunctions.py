@@ -71,13 +71,14 @@ def tau_dcmotor(omega, motor):
         raise Exception('<Motor input is not a dict>')
     
     #verifying edge/corner cases for array type
-    if np.any(omega) > omegaNoLoad:
-        tau = 0
-    if np.any(omega) <= 0:
-        tau = torque_stall
-    else:
-        #calculating tau from 2.1 formula
-        tau = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * omega
+    for i in omega:
+        if np.any(i) > omegaNoLoad:
+            tau = 0
+        if np.any(i) <= 0:
+            tau = torque_stall
+        else:
+            #calculating tau from 2.1 formula
+            tau = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * i
     return tau
 
 
