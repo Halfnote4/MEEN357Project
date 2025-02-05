@@ -35,7 +35,6 @@ wheel_assembly = {
     'motor': motor
 }
 
-
 rover = {
     'wheel_assembly': wheel_assembly
     ,
@@ -49,8 +48,6 @@ rover = {
     }
 }
 
-
-
 # Planet constants
 planet = {
     'g': 3.72  # m/s^2 (acceleration due to gravity)
@@ -60,7 +57,7 @@ planet = {
 
 
 import numpy as np
-import scipy as sp
+import scipy.special as sp
 
 
 def tau_dcmotor(omega, motor):
@@ -73,20 +70,14 @@ def tau_dcmotor(omega, motor):
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
     
-    
-    #verify for singular input type i.e int or float    
-    if isinstance(omega, (int,float)):
-        omega = np.array(omega)
-    
     #verifying edge/corner cases for array type
-    for i in omega:
-        if i > omegaNoLoad:
-            tau = 0
-        if i <= 0:
-            tau = torque_stall
-        else:
-            #calculating tau from 2.1 formula
-            tau = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * omega
+    if np.any(omega) > omegaNoLoad:
+        tau = 0
+    if np.any(omega) <= 0:
+        tau = torque_stall
+    else:
+        #calculating tau from 2.1 formula
+        tau = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * omega
     return tau
 
 
@@ -102,7 +93,7 @@ def get_gear_ratio(speed_reducer):
     typeo = speed_reducer['type']
     
     if typeo != 'reverted':
-        raise Exception('<Invalid type called')
+        raise Exception('<Invalid speed reducer type called')
     
     Ng = (gear/pinion)**2
 
@@ -152,7 +143,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
     if np.any(terrain_angle) < -75 and np.any(terrain_angle) > 75:
         raise Exception('<Terrain_angle not in bounds')    
     
-    Fn = get_mass(rover)*planet['g']*np.cos(np.degrees(terrain_angle))
+    Fn = get_mass(rover)*planet['g']*np.cos(np.radians(terrain_angle))
     
     Frr_simple = Crr*Fn
     
