@@ -91,7 +91,6 @@ def tau_dcmotor(omega, motor):
 
 
 
-
 def get_gear_ratio(speed_reducer):
     if type(speed_reducer) is not dict:
         raise Exception('<Speed reducer input is not a dict>')
