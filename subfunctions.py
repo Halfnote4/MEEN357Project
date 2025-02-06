@@ -222,7 +222,7 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
 
     # validate all elements of terrain_angle are between -75 and +75 degrees
     if np.any((np.asarray(terrain_angle) < -75) | (np.asarray(terrain_angle) > 75)):
-        raise Exception('<Terrain angle not in bounds>')
+        raise Exception('<Terrain angle not in bounds of -75 to 75>')
 
     # validate rover and planet are dictionaries
     if type(rover) is not dict:
