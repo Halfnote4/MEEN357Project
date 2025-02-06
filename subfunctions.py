@@ -65,38 +65,27 @@ def tau_dcmotor(omega, motor):
     tauNoLoad = motor['torque_noload']
     omegaNoLoad = motor['speed_noload']
     #checking for errors in input
-    if not isinstance(omega, (int, float, np.ndarray)):
+    if (type(omega) is not int) and (type(omega) is not float) and (not isinstance(omega, np.ndarray)):
         raise Exception('<Omega is not a valid vector or scalar>')
+    #check for 1 dim array, knowing its an array
+    elif not isinstance(omega, np.ndarray) and np.ndim(omega) != 1:
+        raise Exception('<Omega is not a valid 1D vector>')
+    #in case of array type
+    elif not isinstance(omega, np.ndarray):
+        #verifying edge/corner case for single int/float type to ensure array output
+        omega = np.array([omega])
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
-    
-
-    #in case of array type
-    if isinstance(omega, np.ndarray):
-        for i in range(len(omega)):
-            #verify scalar
-            if not isinstance(omega[i], (int, float, np.ndarray)):
-                raise Exception('<Omega is not a valid vector or scalar>')
-            if omega[i] > omegaNoLoad:
-                tau[i] = 0
-            if i <= 0:
-                tau[i] = torque_stall
-            else:
-             #calculating tau from 2.1 formula
-                tau[i] = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * omega[i]
-
-    #verifying edge/corner case for single int/float type
-    else:
-        if omega > omegaNoLoad:
-            tau = 0
-        if omega <= 0:
-            tau = torque_stall
+    for i in range(len(omega)):
+        #verify scalar for each omega val in array
+        tau = np.zeros(len(omega), dtype=float)
+        if omega[i] > omegaNoLoad:
+            tau[i] = 0
+        elif omega[i] <= 0:
+            tau[i] = torque_stall
         else:
-        #calculating tau from 2.1 formula
-            tau = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * omega
-
-    
-
+            #calculating tau from 2.1 formula
+            tau[i] = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * omega[i]
     return tau
 
 
