@@ -76,9 +76,11 @@ def tau_dcmotor(omega, motor):
         omega = np.array([omega])
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
+        
+    tau = np.zeros(len(omega), dtype=float)
+        
     for i in range(len(omega)):
         #verify scalar for each omega val in array
-        tau = np.zeros(len(omega), dtype=float)
         if omega[i] > omegaNoLoad:
             tau[i] = 0
         elif omega[i] <= 0:
@@ -207,18 +209,22 @@ def F_drive(omega, rover):
 
     # vectorization
     omega = np.atleast_1d(omega)
+    
+    gear_ratio = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
+    torque = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
+    radius = rover['wheel_assembly']['wheel']['radius']
 
-    # Compute the drive force,
-    Fd = 6 * get_gear_ratio(speed_reducer) * tau_dcmotor(omega, motor) / rover['wheel_assembly']['wheel']['radius']
+    
+    Fd= 6 * gear_ratio * torque / radius
 
     return Fd
 
 
-omega = np.array([0.00, 0.50, 1.00, 2.00, 3.00, 3.80])
-Fd = F_drive(omega, rover)
-print('Omega Fd')
-for i in range(len(Fd)):
-    print('{:3.4F} {:3.4F}'.format(omega[i], Fd[i]))
+#omega = np.array([0.00, 0.50, 1.00, 2.00, 3.00, 3.80])
+#Fd = F_drive(omega, rover)
+#print('Omega Fd')
+#for i in range(len(Fd)):
+    #print('{:3.4F} {:3.4F}'.format(omega[i], Fd[i]))
 
 
 def F_net(omega, terrain_angle, rover, planet, Crr):
