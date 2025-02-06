@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from tau_dcmotor import tau_dcmotor 
+from subfunctions import tau_dcmotor 
 
 
 motor= {
