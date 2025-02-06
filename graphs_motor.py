@@ -46,4 +46,3 @@ plt.grid(True)
 
 plt.tight_layout()
 
-plt.savefig('motor_graphs.png')
