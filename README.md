@@ -6,17 +6,18 @@ Deadlines:
 
 
 Eddy:
-a) tau_dcmotor
-b) get_gear_ratio
-c) get_mass
-d) F_rolling
+a) tau_dcmotor - NEEDS DEBUGGING        <MAIN ISSUE!!!> (on it)
+b) get_gear_ratio - DONE
+c) get_mass - DONE 
+d) F_rolling - NEEDS DEBUGGING
 
 Eimaan:
-e) F_gravity
-f) F_drive
-g) F_net
+e) F_gravity - NEEDS DEBUGGING
+f) F_drive - NEEDS DEBUGGING
+g) F_net - NEEDS DEBUGGING
 
-DUE: Feb 2nd  - DONE!
+OG. DUE: Feb 2nd 
+NEW DUE: Feb 6th - finish debugs!
 
 
 2) Script Files
