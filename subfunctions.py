@@ -240,8 +240,9 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
             raise Exception('Omega and terrain angle must be vectors of the same size.')
 
     # validate all elements of terrain_angle are between -75 and +75 degrees
-    if np.any((np.asarray(terrain_angle) < -75) | (np.asarray(terrain_angle) > 75)):
-        raise Exception('<Terrain angle not in bounds>')
+    if np.any((terrain_angle < -75) | (terrain_angle > 75)):
+        raise Exception('<Terrain angle not in bounds between -75 and 75>')
+
 
     # validate rover and planet are dictionaries
     if type(rover) is not dict:
@@ -269,6 +270,5 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
 #Fnet = F_net(omega, terrain_angle, rover, planet, Crr)
 #print('terrain_angle Omega F_net')
 #for i in range(len(Fnet)):
-   # print('{:3.4F} {:3.4F} {:3.4F}'.format(terrain_angle[i], omega[i],
-#Fnet[i]))
+  # print('{:3.4F} {:3.4F} {:3.4F}'.format(terrain_angle[i], omega[i], Fnet[i]))
 
