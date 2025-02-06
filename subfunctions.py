@@ -172,7 +172,7 @@ def F_gravity(terrain_angle, rover, planet):
     # all elements of the first argument are between -75 and +75 degrees
     terrain_angle_array = np.asarray(terrain_angle)
     if np.any((terrain_angle_array < -75) | (terrain_angle_array > 75)):
-        raise Exception('<Terrain_angle not in bounds>')
+        raise Exception('<Terrain_angle not in bounds between -75 to 75>')
 
     # validate last two inputs are dictionaries
     if not isinstance(rover, dict):
@@ -186,6 +186,13 @@ def F_gravity(terrain_angle, rover, planet):
     Fgt = -mass * planet['g'] * np.sin(angle_rad)  # Apply formula
 
     return Fgt
+
+
+terrain_angle = np.array([-5.0, 0.0, 5.0, 10.0, 20.0, 30.0]) # degrees!
+Fgt = F_gravity(terrain_angle, rover, planet)
+print('Omega Fgt')
+for i in range(len(Fgt)):
+    print('{:3.4F} {:3.4F}'.format(terrain_angle[i], Fgt[i]))
 
 
 
