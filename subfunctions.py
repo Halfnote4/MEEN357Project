@@ -209,9 +209,16 @@ def F_drive(omega, rover):
     omega = np.atleast_1d(omega)
 
     # Compute the drive force,
-    Fd = 6 * get_gear_ratio(rover) * tau_dcmotor(omega, motor) / motor['wheel_radius']
+    Fd = 6 * get_gear_ratio(speed_reducer) * tau_dcmotor(omega, motor) / rover['wheel_assembly']['wheel']['radius']
 
     return Fd
+
+
+omega = np.array([0.00, 0.50, 1.00, 2.00, 3.00, 3.80])
+Fd = F_drive(omega, rover)
+print('Omega Fd')
+for i in range(len(Fd)):
+    print('{:3.4F} {:3.4F}'.format(omega[i], Fd[i]))
 
 
 def F_net(omega, terrain_angle, rover, planet, Crr):
