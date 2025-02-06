@@ -65,19 +65,38 @@ def tau_dcmotor(omega, motor):
     tauNoLoad = motor['torque_noload']
     omegaNoLoad = motor['speed_noload']
     #checking for errors in input
-    if not isinstance(omega, (int, float, np.ndarray)) and not isinstance(np.any(omega), (int,float)):
+    if not isinstance(omega, (int, float, np.ndarray)):
         raise Exception('<Omega is not a valid vector or scalar>')
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
     
-    #verifying edge/corner cases for array type
-    if np.any(omega) > omegaNoLoad:
-        tau = 0
-    if np.any(omega) <= 0:
-        tau = torque_stall
+
+    #in case of array type
+    if isinstance(omega, np.ndarray):
+        for i in range(len(omega)):
+            #verify scalar
+            if not isinstance(omega[i], (int, float, np.ndarray)):
+                raise Exception('<Omega is not a valid vector or scalar>')
+            if omega[i] > omegaNoLoad:
+                tau[i] = 0
+            if i <= 0:
+                tau[i] = torque_stall
+            else:
+             #calculating tau from 2.1 formula
+                tau[i] = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * omega[i]
+
+    #verifying edge/corner case for single int/float type
     else:
+        if omega > omegaNoLoad:
+            tau = 0
+        if omega <= 0:
+            tau = torque_stall
+        else:
         #calculating tau from 2.1 formula
-        tau = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * omega
+            tau = torque_stall - ((torque_stall - tauNoLoad)/omegaNoLoad) * omega
+
+    
+
     return tau
 
 
