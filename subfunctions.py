@@ -68,7 +68,7 @@ def tau_dcmotor(omega, motor):
     if (type(omega) is not int) and (type(omega) is not float) and (not isinstance(omega, np.ndarray)):
         raise Exception('<Omega is not a valid vector or scalar>')
     #check for 1 dim array, knowing its an array
-    elif not isinstance(omega, np.ndarray) and np.ndim(omega) != 1:
+    if  isinstance(omega, np.ndarray) and np.ndim(omega) != 1:
         raise Exception('<Omega is not a valid 1D vector>')
     #in case of array type
     elif not isinstance(omega, np.ndarray):
@@ -76,9 +76,9 @@ def tau_dcmotor(omega, motor):
         omega = np.array([omega])
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
+    tau = np.zeros(len(omega), dtype=float)
     for i in range(len(omega)):
         #verify scalar for each omega val in array
-        tau = np.zeros(len(omega), dtype=float)
         if omega[i] > omegaNoLoad:
             tau[i] = 0
         elif omega[i] <= 0:
@@ -243,3 +243,13 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
     Fnet = Fd + Fg - Fr  
 
     return Fnet
+
+
+
+# omega = np.array([0.00, 0.50, 1.00, 2.00, 3.00, 3.80])
+# tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
+# print('Omega     Tau')
+# for i in range(len(tau)):
+#     print('{:3.4F}    {:3.4F}'.format(omega[i], tau[i]))
+# # try this too
+# tau_dcmotor(np.array([[0, 0], [1, 2]]), rover['wheel_assembly']['motor'])
