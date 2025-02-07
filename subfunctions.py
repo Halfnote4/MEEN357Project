@@ -251,16 +251,42 @@ def F_drive(omega, rover):
 
 
 def F_net(omega, terrain_angle, rover, planet, Crr):
-    # validate thatfirst two inputs are scalars or vectors
-    if (type(omega) is not int) and (not isinstance(omega, np.ndarray)):
-        raise Exception('<omega is not vector or scalar>')
-    if (type(terrain_angle) is not int) and (not isinstance(terrain_angle, np.ndarray)):
-        raise Exception('<terrain angle is not vector or scalar>')
+    # # validate thatfirst two inputs are scalars or vectors
+    # if (type(omega) is not int) and (not isinstance(omega, np.ndarray)):
+    #     raise Exception('<omega is not vector or scalar>')
+    # if (type(terrain_angle) is not int) and (not isinstance(terrain_angle, np.ndarray)):
+    #     raise Exception('<terrain angle is not vector or scalar>')
 
-    # validate that both are vectors and have the same size
+    # # validate that both are vectors and have the same size
+    # if isinstance(omega, np.ndarray) and isinstance(terrain_angle, np.ndarray):
+    #     if omega.shape != terrain_angle.shape:
+    #         raise Exception('Omega and terrain angle must be vectors of the same size.')
+
+    #a/c - verify scalars or vectors of same size and dicts
+    if (type(omega) is not int) and (type(omega) is not float) and (not isinstance(omega, np.ndarray)):
+       raise Exception('<Omega is not a valid vector or scalar>')
+   #check for 1 dim array, knowing its an array
+    if  isinstance(omega, np.ndarray) and np.ndim(omega) != 1:
+       raise Exception('<Omega is not a valid 1D vector>')
+       #in case of array type
+    elif not isinstance(omega, np.ndarray):
+       #verifying edge/corner case for single int/float type to ensure array output
+       omega = np.array([omega]) 
+    if (type(terrain_angle) is not int) and (type(terrain_angle) is not float) and (not isinstance(terrain_angle, np.ndarray)):
+        raise Exception('<terrain_angle is not a valid vector or scalar>')
+            #check for 1 dim array, knowing its an array
+    if isinstance(terrain_angle, np.ndarray) and np.ndim(terrain_angle) != 1:
+        raise Exception('<terrain_angle is not a valid 1D vector>')
+        #in case of array type
+    elif not isinstance(terrain_angle, np.ndarray):
+       #verifying edge/corner case for single int/float type to ensure array output
+       terrain_angle = np.array([terrain_angle])
+       
+     # validate that both are vectors and have the same size
     if isinstance(omega, np.ndarray) and isinstance(terrain_angle, np.ndarray):
         if omega.shape != terrain_angle.shape:
             raise Exception('Omega and terrain angle must be vectors of the same size.')
+
 
     # validate all elements of terrain_angle are between -75 and +75 degrees
     # if np.any((terrain_angle < -75) | (terrain_angle > 75)):
@@ -278,13 +304,15 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
         raise Exception('<Planet input is not a dict>')
 
     #Validate Crr is a positive scalar
-    if (type(Crr) is not int) and Crr < 0:
+    if (type(Crr) is not int) and (type(Crr) is not float):
+        raise Exception('<Crr is not a scalar>')
+    if Crr < 0 :
         raise Exception('<Crr is not a positive scalar>')
 
     # calc forces
     Fd = F_drive(omega, rover)                 
     Fg = F_gravity(terrain_angle, rover, planet) 
-    Fr = Fr = F_rolling(omega, terrain_angle, rover, planet, Crr)
+    Fr = F_rolling(omega, terrain_angle, rover, planet, Crr)
 
     #calc net force
     Fnet = Fd + Fg + Fr  
@@ -297,5 +325,5 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
 # Fnet = F_net(omega, terrain_angle, rover, planet, Crr)
 # print('terrain_angle Omega F_net')
 # for i in range(len(Fnet)):
-#    print('{:3.4F} {:3.4F} {:3.4F}'.format(terrain_angle[i], omega[i], Fnet[i]))
+#     print('{:3.4F} {:3.4F} {:3.4F}'.format(terrain_angle[i], omega[i], Fnet[i]))
 
