@@ -1,9 +1,8 @@
-
 import matplotlib.pyplot as plt
 import numpy as np
-from subfunctions import tau_dcmotor 
+from subfunctions import tau_dcmotor
 
-
+#def motor
 motor= {
     'torque_stall': 170,    # N·m
     'torque_noload': 0,     # N·m
@@ -11,18 +10,19 @@ motor= {
     'mass': 5.0             # kg
 }
 
-#torque range for motor
-torque = np.linspace(0, motor['torque_stall'], 100)  # [Nm]
+# speed range for motor
+speed = np.linspace(0, motor['speed_noload'], 100)  # [rad/s]
 
-#calc motor shaft speed with tau_dcmotor 
-speed = tau_dcmotor(torque, motor)  # [rad/s]
+# torque using tau_dcmotor function
+torque = tau_dcmotor(speed, motor)  # [Nm]
 
-#calculate motor power
+# calc motor power
 power = torque * speed  # [W]
-# Plotting
+
+# plots
 plt.figure(figsize=(8, 12))
 
-#motor shaft speed vs. motor shaft torque
+# motor shaft speed vs. motor shaft torque
 plt.subplot(3, 1, 1)
 plt.plot(torque, speed)
 plt.xlabel('Motor Shaft Torque [Nm]')
@@ -44,6 +44,4 @@ plt.ylabel('Motor Power [W]')
 plt.grid(True)
 
 
-plt.tight_layout()
-
-plt.show()
+#plt.show()
