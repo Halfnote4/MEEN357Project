@@ -144,21 +144,29 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr):
        #in case of array type
     elif not isinstance(omega, np.ndarray):
        #verifying edge/corner case for single int/float type to ensure array output
-           omega = np.array([omega]) 
+       omega = np.array([omega]) 
     if (type(terrain_angle) is not int) and (type(terrain_angle) is not float) and (not isinstance(terrain_angle, np.ndarray)):
-            raise Exception('<terrain_angle is not a valid vector or scalar>')
+        raise Exception('<terrain_angle is not a valid vector or scalar>')
             #check for 1 dim array, knowing its an array
-    if  isinstance(terrain_angle, np.ndarray) and np.ndim(terrain_angle) != 1:
+    if isinstance(terrain_angle, np.ndarray) and np.ndim(terrain_angle) != 1:
         raise Exception('<terrain_angle is not a valid 1D vector>')
         #in case of array type
     elif not isinstance(terrain_angle, np.ndarray):
        #verifying edge/corner case for single int/float type to ensure array output
-       terrain_angle = np.array([terrain_angle])    
+       terrain_angle = np.array([terrain_angle])
+      
+    # validate that both are vectors and have the same size
+    if isinstance(omega, np.ndarray) and isinstance(terrain_angle, np.ndarray):
+        if omega.shape != terrain_angle.shape:
+            raise Exception('Omega and terrain angle must be vectors of the same size.')
+
     if type(rover) is not dict:
         raise Exception('<Rover input is not a dict>')
     if type(planet) is not dict:
-        raise Exception('<Planet input is not a dict>')        
-    if (type(Crr) is not int) and Crr < 0 :
+        raise Exception('<Planet input is not a dict>') 
+    if (type(Crr) is not int) and (type(Crr) is not float):
+        raise Exception('<Crr is not a scalar>')
+    if (type(Crr) is (int or float)) and Crr < 0 :
         raise Exception('<Crr is not a positive scalar>')
     
     #b - verify bounds
@@ -255,8 +263,12 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
             raise Exception('Omega and terrain angle must be vectors of the same size.')
 
     # validate all elements of terrain_angle are between -75 and +75 degrees
-    if np.any((terrain_angle < -75) | (terrain_angle > 75)):
-        raise Exception('<Terrain angle not in bounds between -75 and 75>')
+    # if np.any((terrain_angle < -75) | (terrain_angle > 75)):
+    #     raise Exception('<Terrain angle not in bounds between -75 and 75>')
+        
+    terrain_angle_array = np.asarray(terrain_angle)
+    if np.any((terrain_angle_array < -75) | (terrain_angle_array > 75)):
+        raise Exception('<Terrain_angle not in bounds between -75 to 75>')
 
 
     # validate rover and planet are dictionaries
