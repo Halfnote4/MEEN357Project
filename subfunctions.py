@@ -134,11 +134,24 @@ and six wheel assemblies, which itself is comprised of a motor, speed reducer, a
 def F_rolling(omega, terrain_angle, rover, planet, Crr):
     
     #a/c - verify scalars or vectors of same size and dicts
-    
-    if (type(omega) is not int) and not isinstance(omega, np.ndarray):
-        raise Exception('<omega is not vector or scalar>')      
-    if (type(terrain_angle) is not int) and not isinstance(terrain_angle, np.ndarray):
-        raise Exception('<terrain_angle is not vector or scalar>')  
+    if (type(omega) is not int) and (type(omega) is not float) and (not isinstance(omega, np.ndarray)):
+       raise Exception('<Omega is not a valid vector or scalar>')
+   #check for 1 dim array, knowing its an array
+    if  isinstance(omega, np.ndarray) and np.ndim(omega) != 1:
+       raise Exception('<Omega is not a valid 1D vector>')
+       #in case of array type
+    elif not isinstance(omega, np.ndarray):
+       #verifying edge/corner case for single int/float type to ensure array output
+           omega = np.array([omega]) 
+    if (type(terrain_angle) is not int) and (type(terrain_angle) is not float) and (not isinstance(terrain_angle, np.ndarray)):
+            raise Exception('<terrain_angle is not a valid vector or scalar>')
+            #check for 1 dim array, knowing its an array
+    if  isinstance(terrain_angle, np.ndarray) and np.ndim(terrain_angle) != 1:
+        raise Exception('<terrain_angle is not a valid 1D vector>')
+        #in case of array type
+    elif not isinstance(terrain_angle, np.ndarray):
+       #verifying edge/corner case for single int/float type to ensure array output
+       omega = np.array([terrain_angle])    
     if type(rover) is not dict:
         raise Exception('<Rover input is not a dict>')
     if type(planet) is not dict:
