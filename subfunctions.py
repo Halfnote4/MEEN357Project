@@ -76,9 +76,11 @@ def tau_dcmotor(omega, motor):
         omega = np.array([omega])
     if type(motor) is not dict:
         raise Exception('<Motor input is not a dict>')
+        
+    tau = np.zeros(len(omega), dtype=float)
+        
     for i in range(len(omega)):
         #verify scalar for each omega val in array
-        tau = np.zeros(len(omega), dtype=float)
         if omega[i] > omegaNoLoad:
             tau[i] = 0
         elif omega[i] <= 0:
@@ -220,11 +222,22 @@ def F_drive(omega, rover):
 
     # vectorization
     omega = np.atleast_1d(omega)
+    
+    gear_ratio = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
+    torque = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
+    radius = rover['wheel_assembly']['wheel']['radius']
 
-    # Compute the drive force,
-    Fd = 6 * get_gear_ratio(rover) * tau_dcmotor(omega, motor) / motor['wheel_radius']
+    
+    Fd= 6 * gear_ratio * torque / radius
 
     return Fd
+
+
+#omega = np.array([0.00, 0.50, 1.00, 2.00, 3.00, 3.80])
+#Fd = F_drive(omega, rover)
+#print('Omega Fd')
+#for i in range(len(Fd)):
+    #print('{:3.4F} {:3.4F}'.format(omega[i], Fd[i]))
 
 
 def F_net(omega, terrain_angle, rover, planet, Crr):
@@ -240,8 +253,9 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
             raise Exception('Omega and terrain angle must be vectors of the same size.')
 
     # validate all elements of terrain_angle are between -75 and +75 degrees
-    if np.any((np.asarray(terrain_angle) < -75) | (np.asarray(terrain_angle) > 75)):
-        raise Exception('<Terrain angle not in bounds>')
+    if np.any((terrain_angle < -75) | (terrain_angle > 75)):
+        raise Exception('<Terrain angle not in bounds between -75 and 75>')
+
 
     # validate rover and planet are dictionaries
     if type(rover) is not dict:
@@ -256,9 +270,18 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
     # calc forces
     Fd = F_drive(omega, rover)                 
     Fg = F_gravity(terrain_angle, rover, planet) 
-    Fr = F_rolling(terrain_angle, rover, planet, Crr)  
+    Fr = Fr = F_rolling(omega, terrain_angle, rover, planet, Crr)
 
     #calc net force
     Fnet = Fd + Fg - Fr  
 
     return Fnet
+
+#omega = np.array([0.00, 0.50, 1.00, 2.00, 3.00, 3.80])
+#terrain_angle = np.array([-5.0, 0.0, 5.0, 10.0, 20.0, 30.0]) # degrees!
+#Crr = 0.1
+#Fnet = F_net(omega, terrain_angle, rover, planet, Crr)
+#print('terrain_angle Omega F_net')
+#for i in range(len(Fnet)):
+  # print('{:3.4F} {:3.4F} {:3.4F}'.format(terrain_angle[i], omega[i], Fnet[i]))
+
