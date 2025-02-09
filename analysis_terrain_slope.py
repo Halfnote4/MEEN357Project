@@ -14,6 +14,7 @@ omega_max = np.zeros(len(slope_list_deg), dtype=float)
 omega_nl = rover['wheel_assembly']['motor']['speed_noload']
 
 
+
 #To find vmax -> root of fmax = 0 at each given angle
 for ii in range(len(slope_list_deg)):
     fun = lambda omega: F_net(omega, float(slope_list_deg[ii]), rover, planet, Crr)
