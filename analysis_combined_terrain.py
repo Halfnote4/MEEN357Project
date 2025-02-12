@@ -42,8 +42,8 @@ ax.view_init(azim = 30, elev = 30)
 ax.set_box_aspect(None, zoom=0.8)
 ax.set_title('Combined Terrain Analysis')
 ax.set_xlabel('Crr')
-ax.set_ylabel('Rover Speed [m/s]')
-ax.set_zlabel('Terrain angle (degrees)')
+ax.set_ylabel('Terrain angle (degrees)')
+ax.set_zlabel('Rover Speed [m/s]')
 
 #plt.show()
 
