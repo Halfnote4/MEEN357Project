@@ -20,7 +20,7 @@ for ii in range(len(Crr_array)):
 #plotting vmax vs Crr_array
 plt.figure(1)
 plt.plot(Crr_array, omega_max)  
-plt.title('Terrain Slope Analysis')
+plt.title('Rolling Resistance Analysis')
 plt.xlabel('Crr')
 plt.ylabel('Rover Speed [m/s]')
 #plt.show()

@@ -29,14 +29,22 @@ for i in range(N):
         try:
             sol = root_scalar(fun, method='bisect', bracket=[0, omega_nl])
             VMAX[i,j] = (sol.root * rover['wheel_assembly']['wheel']['radius'])/ get_gear_ratio(speed_reducer) 
-        except ValueError:
-            VMAX[i,j] = np.nan
-
-
+        except:
+            VMAX[i,j] = np.NAN
 
 figure = plt.figure()
-ax = Axes3D(figure, elev = 0, azim = 0) # where N1 and N2 will control the 3D view
-ax.plot_surface(CRR, SLOPE, VMAX)
+ax = plt.axes(projection = '3d')
 
-            
-        
+#CODE AXES/TITLE
+
+ax.plot_surface(CRR, SLOPE, VMAX)
+ax.view_init(azim = 30, elev = 30)
+ax.set_box_aspect(None, zoom=0.8)
+ax.set_title('Combined Terrain Analysis')
+ax.set_xlabel('Crr')
+ax.set_ylabel('Rover Speed [m/s]')
+ax.set_zlabel('Terrain angle (degrees)')
+
+#plt.show()
+
+ 
