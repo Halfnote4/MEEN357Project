@@ -14,4 +14,4 @@ import scipy.interpolate as interp
 
 
 #To calculate terrain angles, we need to first interpolate the terrain data
-alpha_fun = interp1d(alpha_dist, alpha_deg, kind = 'cubic', fill_value=’extrapolate’) #fit the cubic spline - given code
+alpha_fun = interp1d(alpha_dist, alpha_deg, kind = 'cubic', fill_value='extrapolate') #fit the cubic spline - given code

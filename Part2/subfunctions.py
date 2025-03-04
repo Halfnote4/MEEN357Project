@@ -320,45 +320,48 @@ Fnet = F_net(omega, angle, rover, planet, Crr)
 
 
 
-
-
 '''
 PART 2
 
 '''
+import scipy.interpolate as spi
 
 
-"""
-motorW - Eddy
-
-Compute the rotational speed of the motor shaft [rad/s] given the translational velocity of the rover and the rover dictionary.
-Inputs:
-    v : 1D numpy array [m/s]
-    rover: dict, dictionary containing rover parameters
-
-Return:
-    w : 1D numpy array [rad/s]
-
-Notes:
--Should call get_gear_ratio() to get the gear ratio
--Should validate (a) the first input is a scalar or vector. If a vector, it should be defined as a numpy array and matrices are not allowed
--Should (b) the second input is a dict
->Should any of these fail, need to raise an exception
-
-"""
 
 def motorW(v, rover):
+
+    """
+    motorW
+
+    Compute the rotational speed of the motor shaft [rad/s] given the translational velocity of the rover and the rover dictionary.
+    Inputs:
+        v : 1D numpy array [m/s]
+        rover: dict, dictionary containing rover parameters
+
+    Return:
+        w : 1D numpy array [rad/s]
+
+    Notes:
+    -Should call get_gear_ratio() to get the gear ratio
+    -Should validate (a) the first input is a scalar or vector. If a vector, it should be defined as a numpy array and matrices are not allowed
+    -Should (b) the second input is a dict
+    >Should any of these fail, need to raise an exception
+
+    """
 
     #Input verification
 
     #a
-    if (type(v) != int) and (type(v) != float) and (not isinstance(v, np.ndarray)):
-        raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')
-    elif not isinstance(v, np.ndarray):
-        v = np.array([v],dtype=float) # make the scalar a numpy array
-    elif len(np.shape(v)) != 1:
-        raise Exception('First input must be a scalar or a vector. Matrices are not allowed.')
-        
+    if not isinstance(v, (np.ndarray, float, int)):
+        raise Exception('First input must be a scalar or a vector. If input is a vector, it should be defined as a numpy array.')    
+    
+    try:
+        if len(v.shape) != 1:
+            raise Exception('First input must be a 1D numpy array')
+    except:
+        pass    
+
+    
     #b
     if type(rover) != dict:
         raise Exception('Second input must be a dict')
@@ -373,66 +376,75 @@ def motorW(v, rover):
     return w
 
 
-"""
-rover_dynamics - Eddy
-
-Computes the derivative of the state vector ([velocity, position]) for the rover given its current state. 
-It requires rover and experiment dictionary input parameters. It is intended to be passed to an ODE
-solver.
-Inputs:
-    t : scalar, time sample [s]
-    y : 1D numpy array, state vector [m/s, m]
-    rover : dict, dictionary containing rover parameters
-    planet : dict, dictionary containing planet parameters
-    experiment : dict, dictionary containing experiment parameters
-
-Return:
-    dydt : 1D numpy array, acceleration [m/s^2] and rover velocity [m/s]
-
-
-Notes:
--Should validate all meaningful inputs
-
--Should call F_net() to get the net force
--Should call MotorW() to get the motor speed
--Should call get_mass() to get the rover mass
--Create an interpolation function to calculate terrain angle and evaluate it at the current rover position (terrain_angle = alpha_fun(y[1]))
-
--Assumes y[1] has been defined to be the rover position
-
-
-"""
-
 def rover_dynamics(t, y, rover, planet, experiment):
+
+
+    """
+    rover_dynamics - Eddy
+
+    Computes the derivative of the state vector ([velocity, position]) for the rover given its current state. 
+    It requires rover and experiment dictionary input parameters. It is intended to be passed to an ODE
+    solver.
+    Inputs:
+        t : scalar, time sample [s]
+        y : 1D numpy array, state vector [m/s, m]
+        rover : dict, dictionary containing rover parameters
+        planet : dict, dictionary containing planet parameters
+        experiment : dict, dictionary containing experiment parameters
+
+    Return:
+        dydt : 1D numpy array, acceleration [m/s^2] and rover velocity [m/s]
+
+
+    Notes:
+    -Should validate all meaningful inputs
+
+    -Should call F_net() to get the net force
+    -Should call MotorW() to get the motor speed
+    -Should call get_mass() to get the rover mass
+    -Create an interpolation function to calculate terrain angle and evaluate it at the current rover position (terrain_angle = alpha_fun(y[1]))
+
+    -Assumes y[1] has been defined to be the rover position
+
+
+    """
 
     #Input verification
 
-    #a
-    if (type(t) != int) and (type(t) != float):
-        raise Exception('First input must be a scalar')
-    #b
-    if (not isinstance(y, np.ndarray)):
-        raise Exception('Second input must be a numpy array')
-    elif len(np.shape(y)) != 1:
-        raise Exception('Second input must be a 1D numpy array')
-    #c
+    #y must be a 1D array
+    if not isinstance(y, (np.ndarray, int, float)):
+        raise Exception('y must be a numpy array or scalar')
+    if isinstance(y, np.ndarray):
+        if len(y.shape) != 1:
+            raise Exception('y must be a 1D numpy array')
+        
+    #t must be scalar
+    if not isinstance(t, (float, int)):
+        raise Exception('t must be a scalar')
+    
+    #rover must be dict
     if type(rover) != dict:
-        raise Exception('Third input must be a dict')
-    #d
+        raise Exception('rover must be a dict')
+    
+    #planet must be dict
     if type(planet) != dict:
-        raise Exception('Fourth input must be a dict')
-    #e
+        raise Exception('planet input must be a dict')
+    
+    #experiment must be dict
     if type(experiment) != dict:
-        raise Exception('Fifth input must be a dict')
+        raise Exception('experiment input must be a dict')
+    
     
     #Main code
 
-    #Get the terrain angle
-    alpha_fun = experiment['terrain_angle_fun']
-    terrain_angle = alpha_fun(y[1])
+    #interpolation function
+    alpha_fun = spi.interp1d(experiment['alpha_dist'], experiment['alpha_deg'], kind='cubic', fill_value='extrapolate')
+
+    #Get the terrain angle - given definition in notes
+    terrain_angle = float(alpha_fun(y[1]))
 
     #Get the motor speed
-    v = MotorW(y[0], rover)
+    v = float(motorW(y[0], rover))
 
     #Get the net force
     Fnet = F_net(v, terrain_angle, rover, planet, experiment['Crr'])
@@ -464,34 +476,37 @@ battenergy - Eimaan
 
 
 
-"""
-simulate_rover - Eddy
-
-Integrates the trajectory of the rover using input arguments.
-
-Inputs:
-    rover : dict, dictionary containing rover parameters
-    planet : dict, dictionary containing planet parameters
-    experiment : dict, dictionary containing experiment parameters
-    end_event : dict, dictionary containing termination parameters
-
-Return:
-    rover: dict, dictionary containing rover parameters with updated state vector/trajectory
-
-Notes: *as written*
-This function integrates the trajectory of a rover according to the terrain and initial conditions contained in
-experiment1 (defined in the define_experiment.py file). It uses end_event to define the necessary and sufficient
-conditions to terminate the simulation. Note that you can use the Python ODE solvers. Please determine the best
-solver for the particular problem (Hint: Think about whether it is a stiff system and needs an implicit solver). Note
-that you need to provide the conditions to stop the simulation using the options structure to be fed into the ode
-solver. You will need to download end_of_mission_event function from Canvas and add it to your
-subfunctions.py file. This function requires the end_event structure. The return argument will be used as one of the
-inputs to your ODE solver.
-The function must check validity of inputs. The function should populate the rover[‘telemetry’] dictionary.
-
-"""
 
 def simulate_rover(rover, planet, experiment, end_event):
+
+
+
+    """
+    simulate_rover - Eddy
+
+    Integrates the trajectory of the rover using input arguments.
+
+    Inputs:
+        rover : dict, dictionary containing rover parameters
+        planet : dict, dictionary containing planet parameters
+        experiment : dict, dictionary containing experiment parameters
+        end_event : dict, dictionary containing termination parameters
+
+    Return:
+        rover: dict, dictionary containing rover parameters with updated state vector/trajectory
+
+    Notes: *as written*
+    This function integrates the trajectory of a rover according to the terrain and initial conditions contained in
+    experiment1 (defined in the define_experiment.py file). It uses end_event to define the necessary and sufficient
+    conditions to terminate the simulation. Note that you can use the Python ODE solvers. Please determine the best
+    solver for the particular problem (Hint: Think about whether it is a stiff system and needs an implicit solver). Note
+    that you need to provide the conditions to stop the simulation using the options structure to be fed into the ode
+    solver. You will need to download end_of_mission_event function from Canvas and add it to your
+    subfunctions.py file. This function requires the end_event structure. The return argument will be used as one of the
+    inputs to your ODE solver.
+    The function must check validity of inputs. The function should populate the rover[‘telemetry’] dictionary.
+
+    """
 
     #Input verification
 
@@ -511,7 +526,7 @@ def simulate_rover(rover, planet, experiment, end_event):
     #Main code
 
     #Define the ODE solver
-    ode_solver = odeint(rover_dynamics, experiment['initial_conditions'], experiment['time'], args=(rover, planet, experiment))
+    ode_solver = np.odeint(rover_dynamics, experiment['initial_conditions'], experiment['time'], args=(rover, planet, experiment))
 
     #Populate the rover telemetry dictionary
     rover['telemetry'] = {'time': experiment['time'], 'state': ode_solver}
