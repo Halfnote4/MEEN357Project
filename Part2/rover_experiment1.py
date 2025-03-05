@@ -67,7 +67,9 @@ end_event = {
 events = em.end_of_mission_event(end_event)
 
 
-sf.simulate_rover(rover, planet, experiment, events)
+experiment = de.experiment1()[0]
+
+sf.simulate_rover(rover, planet, experiment, end_event)
 
 
 #Subfigures, as requested:

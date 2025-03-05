@@ -10,7 +10,7 @@ a. motorW - Eddy DONE!
 b. rover_dynamics - Eddy DONE!
 c. mechpower - Eimaan
 d. battenergy - Eimaan
-e. simulate_rover - Eddy
+e. simulate_rover - Eddy/Eimaan
 
 DUE Feb 24
 

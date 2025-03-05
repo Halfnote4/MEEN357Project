@@ -475,6 +475,13 @@ battenergy - Eimaan
 """
 import scipy.integrate as spitegrate
 
+
+
+
+
+
+
+
 #import end_of_mission_event as eome
 
 def simulate_rover(rover, planet, experiment, end_event):
@@ -530,11 +537,41 @@ def simulate_rover(rover, planet, experiment, end_event):
     #Define the lambda fun
     fun = lambda t,y: rover_dynamics(t, y, rover, planet, experiment)
 
-    #sol = (diff eq, time span, initial conditions, end condition/event, dense_output)
-    sol = spitegrate.solve_ivp(fun, experiment['time_span'], experiment['state'], events = lambda t,y: end_event(t,y,rover,planet,experiment), dense_output = True)
+    #sol = (diff eq, time span, initial conditions, end condition/event, method-> for stiff system)
+    sol = spitegrate.solve_ivp(fun, experiment['time_range'], experiment['initial_conditions'], method = 'BDF')
+        #get y = ....
+    
+    #time
+    time = experiment['time_span']
+
+    #completion time
+    if max(time) < end_event['max_time']:
+        completion_time = max(time)
+    else:
+        completion_time = end_event['max_time']
+
+    #velocity info
+    velocity = sol.y[0]
+    max_velocity = max(velocity)
+    average_velocity = np.mean(velocity)
+    
+    #position info
+    position = sol.y[1]
+    distance_traveled = position[-1]
 
 
     #update rover telemetry
-    rover['telemetry'] = sol.sol 
+    rover['telemetry'] = {
+        'time' : time,
+        'completion_time' : completion_time,
+        'velocity' : velocity,
+        'position' : position,
+        'distance_traveled' : distance_traveled,
+        'max_velocity' : max_velocity,
+        'average_velocity' : average_velocity,
+        'power' : 1, #Eimaan
+        'battery_energy' : 1, #Eimaan
+        'energy_per_distance' : 1, #Eimaan
+        }
 
     return rover
