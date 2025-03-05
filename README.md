@@ -6,8 +6,8 @@ Deadlines:
 
 1)
   Subfunctions:
-a. motorW - Eddy
-b. rover_dynamics - Eddy
+a. motorW - Eddy DONE!
+b. rover_dynamics - Eddy DONE!
 c. mechpower - Eimaan
 d. battenergy - Eimaan
 e. simulate_rover - Eddy

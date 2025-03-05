@@ -303,7 +303,7 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
     
     return Fnet
 
-
+'''
 #%% Hint for students
 omega = 1 # rad/s (motor shaft speed)
 angle = 5 # degrees (terrain angle)
@@ -316,7 +316,7 @@ Fd = F_drive(omega, rover)
 Frr = F_rolling(omega, angle, rover, planet, Crr)
 Fg = F_gravity(angle, rover, planet)
 Fnet = F_net(omega, angle, rover, planet, Crr)
-
+'''
 
 
 
@@ -441,21 +441,21 @@ def rover_dynamics(t, y, rover, planet, experiment):
     alpha_fun = spi.interp1d(experiment['alpha_dist'], experiment['alpha_deg'], kind='cubic', fill_value='extrapolate')
 
     #Get the terrain angle - given definition in notes
-    terrain_angle = float(alpha_fun(y[1]))
+    terrain_angle = float(alpha_fun(float(y[1])))
 
     #Get the motor speed
-    v = float(motorW(y[0], rover))
+    omega = float(motorW(float(y[0]), rover))
 
     #Get the net force
-    Fnet = F_net(v, terrain_angle, rover, planet, experiment['Crr'])
+    Fnet = F_net(omega, terrain_angle, rover, planet, experiment['Crr'])
 
     #Get the rover mass
     m = get_mass(rover)
 
     #Calculate acceleration
-    a = Fnet / m
+    a = float(Fnet / m)
 
-    dydt = np.array([a, y[0]])
+    dydt = np.array([a, float(y[0])])
 
     return dydt
 
@@ -473,9 +473,9 @@ battenergy - Eimaan
 
 
 """
+import scipy.integrate as spitegrate
 
-
-
+#import end_of_mission_event as eome
 
 def simulate_rover(rover, planet, experiment, end_event):
 
@@ -525,10 +525,16 @@ def simulate_rover(rover, planet, experiment, end_event):
     
     #Main code
 
-    #Define the ODE solver
-    ode_solver = np.odeint(rover_dynamics, experiment['initial_conditions'], experiment['time'], args=(rover, planet, experiment))
 
-    #Populate the rover telemetry dictionary
-    rover['telemetry'] = {'time': experiment['time'], 'state': ode_solver}
+
+    #Define the lambda fun
+    fun = lambda t,y: rover_dynamics(t, y, rover, planet, experiment)
+
+    #sol = (diff eq, time span, initial conditions, end condition/event, dense_output)
+    sol = spitegrate.solve_ivp(fun, experiment['time_span'], experiment['state'], events = lambda t,y: end_event(t,y,rover,planet,experiment), dense_output = True)
+
+
+    #update rover telemetry
+    rover['telemetry'] = sol.sol 
 
     return rover
