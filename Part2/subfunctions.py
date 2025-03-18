@@ -464,6 +464,50 @@ def rover_dynamics(t, y, rover, planet, experiment):
 mechpower - Eimaan
 
 """
+def mechpower(v, rover):
+    """
+    mechpower - 
+    
+    Calculates the power output of a single DC motor for each point in a velocity profile.
+    
+    Inputs:
+        v      : 1D numpy array or scalar [m/s] - Rover velocity data from the simulation.
+        rover  : dict - Dictionary with rover details, including motor specs.
+    
+    Outputs:
+        P      : 1D numpy array or scalar [W] - The instantaneous power from the motor.
+    
+    Notes:
+    - First input should be a scalar or a 1D numpy array, not a matrix
+    - The second input should be a dictionary with motor parameters.
+    - Use `tau_dcmotor` for torque and `motorW` for angular velocity
+    - Check units
+    
+    """
+    
+
+    # Validate inputs
+    if not isinstance(v, (np.ndarray, float, int)):
+        raise Exception("First input must be a scalar ) or a 1D numpy array.")
+    
+    if isinstance(v, np.ndarray) and v.ndim != 1:
+        raise Exception("First input must be a 1D numpy array, not a matrix.")
+    
+    if not isinstance(rover, dict):
+        raise Exception("Second input must be a dictionary containing rover definition.")
+    
+
+    
+    # Compute angular velocity using motorW
+    omega = motorW(v, rover)
+    tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
+    
+    # Compute power as P = torque * angular velocity
+    P = tau * omega
+  
+    return P
+
+
 
 
 
@@ -474,6 +518,62 @@ battenergy - Eimaan
 
 """
 import scipy.integrate as spitegrate
+
+
+def battenergy(t, v, rover):
+    
+    
+    """
+    battenergy - 
+    
+    Computes how much electrical energy the rover battery uses over time, based on velocity data. 
+    This function also takes into account the inefficiencies of converting electrical energy to mechanical energy in the motor.
+
+    Calling Syntax:
+    E = battenergy(t, v, rover)
+
+    Inputs:
+        t      : 1D numpy array [s] - Time samples from the rover simulation.
+        v      : 1D numpy array [m/s] - Rover velocity data from the simulation.
+        rover  : dict - Dictionary containing rover details.
+
+    Outputs:
+        E      : scalar [J] - Total electrical energy used by the rover's battery pack.
+
+    Notes:
+        - The inputs should be equal-length arrays for time and velocity, and the rover input should be a dictionary.
+        - The function calls `mechpower` and `tau_dcmotor` to calculate the necessary power and torque.
+        - Use interpolation for efficiency based on torque, so make sure the dictionary has that data.
+        - Check units
+     """
+    #validate inputs
+    if not (isinstance(t, np.ndarray) and isinstance(v, np.ndarray)):
+        raise Exception("First and second inputs must be 1D numpy arrays.")
+    if t.shape != v.shape:
+        raise Exception("Time and velocity arrays must be of equal length.")
+    if not isinstance(rover, dict):
+        raise Exception("Third input must be a dictionary containing rover definition.")
+    
+    # mechanical power for a single motor
+    P_mech = mechpower(v, rover)
+    
+    # torque
+    omega = motorW(v, rover)
+    tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
+    
+    # interpolate  
+    efficiency = np.interp(tau, 
+                           rover['wheel_assembly']['motor']['effcy_tau'], 
+                           rover['wheel_assembly']['motor']['effcy'])
+    
+    # electrical power (efficiency and 6 motors)
+    P_elec = P_mech / efficiency * 6
+    
+    #total energy
+    E = spitegrate.simps(P_elec, t)
+    
+    return E
+
 
 
 

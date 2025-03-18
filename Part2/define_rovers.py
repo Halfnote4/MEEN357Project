@@ -13,7 +13,9 @@ def define_rover_1():
     motor = {'torque_stall':170,
              'torque_noload':0,
              'speed_noload':3.80,
-             'mass':5.0}
+             'mass':5.0,
+             'effcy_tau': [0, 10, 20, 40, 70, 165],  
+             'effcy': [0, 0.55, 0.75, 0.71, 0.50, 0.05]}
     
         
     chassis = {'mass':659}
