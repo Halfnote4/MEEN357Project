@@ -7,6 +7,9 @@
 
 import math
 import numpy as np
+import scipy.interpolate as spi
+import scipy.integrate as spitegrate
+
 
 def get_mass(rover):
     """
@@ -324,7 +327,7 @@ Fnet = F_net(omega, angle, rover, planet, Crr)
 PART 2
 
 '''
-import scipy.interpolate as spi
+
 
 
 
@@ -488,10 +491,11 @@ def mechpower(v, rover):
 
     # Validate inputs
     if not isinstance(v, (np.ndarray, float, int)):
-        raise Exception("First input must be a scalar ) or a 1D numpy array.")
+        raise Exception("First input must be a scalar or a 1D numpy array.")
     
-    if isinstance(v, np.ndarray) and v.ndim != 1:
-        raise Exception("First input must be a 1D numpy array, not a matrix.")
+    if isinstance(v, np.ndarray):
+        if len(v.shape) != 1:
+            raise Exception("First input must be a 1D numpy array, not a matrix.")
     
     if not isinstance(rover, dict):
         raise Exception("Second input must be a dictionary containing rover definition.")
@@ -506,18 +510,14 @@ def mechpower(v, rover):
     P = tau * omega
   
     return P
-
-
-
+ 
 
 
 
 """
 battenergy - Eimaan
 
-
 """
-import scipy.integrate as spitegrate
 
 
 def battenergy(t, v, rover):
@@ -549,10 +549,14 @@ def battenergy(t, v, rover):
     #validate inputs
     if not (isinstance(t, np.ndarray) and isinstance(v, np.ndarray)):
         raise Exception("First and second inputs must be 1D numpy arrays.")
-    if t.shape != v.shape:
+    if len(t) != len(v):
         raise Exception("Time and velocity arrays must be of equal length.")
+    if len(v.shape) != 1:
+        raise Exception("Inputs must be 1D arrays")
+        
     if not isinstance(rover, dict):
         raise Exception("Third input must be a dictionary containing rover definition.")
+    
     
     # mechanical power for a single motor
     P_mech = mechpower(v, rover)
@@ -562,15 +566,16 @@ def battenergy(t, v, rover):
     tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
     
     # interpolate  
-    efficiency = np.interp(tau, 
-                           rover['wheel_assembly']['motor']['effcy_tau'], 
-                           rover['wheel_assembly']['motor']['effcy'])
-    
+    efficiency_fun = spi.interp1d(rover['wheel_assembly']['motor']['effcy_tau'], 
+                              rover['wheel_assembly']['motor']['effcy'],
+                              kind = "cubic")
+    efficiency = efficiency_fun(tau)
     # electrical power (efficiency and 6 motors)
-    P_elec = P_mech / efficiency * 6
+    P_elec = P_mech / efficiency
     
     #total energy
-    E = spitegrate.simps(P_elec, t)
+    Energy = spitegrate.trapezoid(P_elec, x=t)
+    E = Energy * 6
     
     return E
 
