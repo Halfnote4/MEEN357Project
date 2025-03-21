@@ -50,6 +50,7 @@ Crr = 0.1
 from define_rovers import define_rover_1
 rover, planet = define_rover_1() # this is what is given in Appendix A and B
 
+
 '''
 Fd = F_drive(omega, rover)
 Frr = F_rolling(omega, angle, rover, planet, Crr)
@@ -57,19 +58,18 @@ Fg = F_gravity(angle, rover, planet)
 Fnet = F_net(omega, angle, rover, planet, Crr)
 '''
 
-#End Event dictionary definition as given
+#End Event dictionary definition as given, to be used in the simulate rover function
 end_event = {
     'max_distance' : 1000,
     'max_time' : 10000,
     'min_velocity' : 0.01,
 }
 
-events = em.end_of_mission_event(end_event)
 
+events = em.end_of_mission_event(end_event) #to call in simulate rover
+experiment = de.experiment1()[0] #to call in simulate rover
 
-experiment = de.experiment1()[0]
-
-sf.simulate_rover(rover, planet, experiment, end_event)
+rov = sf.simulate_rover(rover, planet, experiment, end_event)['telemetry'] #create var to call the updated telemetry data of the rover
 
 
 #Subfigures, as requested:
@@ -77,27 +77,27 @@ sf.simulate_rover(rover, planet, experiment, end_event)
 fig, axs = plt.subplots(3, 1, figsize=(10, 10))
 
 #1. Position vs. time
-axs[0].plot(events['time'], events['position'])
+axs[0].plot(rov['Time'], rov['position'])
 axs[0].set_title('Position vs. Time')
 axs[0].set_xlabel('Time (s)')
 axs[0].set_ylabel('Position (m)')
-axs[0].grid()
+#axs[0].grid()
 
 
 #2. Velocity vs. time
-axs[1].plot(events['time'], events['velocity'])
+axs[1].plot(rov['Time'], rov['velocity'])
 axs[1].set_title('Velocity vs. Time')
 axs[1].set_xlabel('Time (s)')
 axs[1].set_ylabel('Velocity (m/s)')
-axs[1].grid()
+#axs[1].grid()
 
 
 #3. Power vs. time
-axs[2].plot(events['time'], events['power'])
+axs[2].plot(rov['Time'], rov['power'])
 axs[2].set_title('Power vs. Time')
 axs[2].set_xlabel('Time (s)')
 axs[2].set_ylabel('Power (W)')
-axs[2].grid()
+#axs[2].grid()
 
 
 plt.tight_layout()
