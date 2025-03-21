@@ -647,13 +647,11 @@ def simulate_rover(rover, planet, experiment, end_event):
     events = end_of_mission_event(end_event)
 
     #sol = (diff eq, time span, initial conditions, end condition/event, method-> for stiff system)
-    sol = spitegrate.solve_ivp(fun, time, y0, method = 'BDF')
+    sol = spitegrate.solve_ivp(fun, time, y0, method = 'BDF', events=events)
         #get y = ....
 
     #completion time
-    if max(time) < end_event['max_time']:
-        completion_time = max(time)
-
+    completion_time = max(time)
 
     #velocity info
     velocity = sol.y[0]
@@ -665,7 +663,7 @@ def simulate_rover(rover, planet, experiment, end_event):
     distance_traveled = position[-1]
 
     #power
-    power = mechpower(velocity, rover) * 6
+    power = mechpower(velocity, rover)
 
     #battery energy
     battery_energy = battenergy(t, velocity, rover)
@@ -673,10 +671,13 @@ def simulate_rover(rover, planet, experiment, end_event):
     #energy_per_distance
     energy_per_distance = battery_energy / distance_traveled 
 
+    #time
+    time = sol.t
+
 
     #update rover telemetry
     rover['telemetry'] = {
-        'time' : time,
+        'Time' : time,
         'completion_time' : completion_time,
         'velocity' : velocity,
         'position' : position,
