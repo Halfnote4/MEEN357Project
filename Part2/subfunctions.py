@@ -6,6 +6,7 @@
 ###########################################################################"""
 
 import math
+from Part2.end_of_mission_event import end_of_mission_event
 import numpy as np
 import scipy.interpolate as spi
 import scipy.integrate as spitegrate
@@ -637,14 +638,13 @@ def simulate_rover(rover, planet, experiment, end_event):
     
     #Main code
 
-
-
      #Define the lambda fun
     fun = lambda t,y: rover_dynamics(t, y, rover, planet, experiment)
     #time
     time = experiment['time_range']
     #initial conditions
     y0 = experiment['initial_conditions'].ravel()
+    events = end_of_mission_event(end_event)
 
     #sol = (diff eq, time span, initial conditions, end condition/event, method-> for stiff system)
     sol = spitegrate.solve_ivp(fun, time, y0, method = 'BDF')
@@ -664,6 +664,10 @@ def simulate_rover(rover, planet, experiment, end_event):
     position = sol.y[1]
     distance_traveled = position[-1]
 
+    #power
+    power = me
+
+
 
     #update rover telemetry
     rover['telemetry'] = {
@@ -674,7 +678,7 @@ def simulate_rover(rover, planet, experiment, end_event):
         'distance_traveled' : distance_traveled,
         'max_velocity' : max_velocity,
         'average_velocity' : average_velocity,
-        'power' : 1, #Eimaan
+        'power' : 
         'battery_energy' : 1, #Eimaan
         'energy_per_distance' : 1, #Eimaan
         }
