@@ -639,21 +639,21 @@ def simulate_rover(rover, planet, experiment, end_event):
 
 
 
-    #Define the lambda fun
+     #Define the lambda fun
     fun = lambda t,y: rover_dynamics(t, y, rover, planet, experiment)
+    #time
+    time = experiment['time_range']
+    #initial conditions
+    y0 = experiment['initial_conditions'].ravel()
 
     #sol = (diff eq, time span, initial conditions, end condition/event, method-> for stiff system)
-    sol = spitegrate.solve_ivp(fun, experiment['time_range'], experiment['initial_conditions'], method = 'BDF')
+    sol = spitegrate.solve_ivp(fun, time, y0, method = 'BDF')
         #get y = ....
-    
-    #time
-    time = experiment['time_span']
 
     #completion time
     if max(time) < end_event['max_time']:
         completion_time = max(time)
-    else:
-        completion_time = end_event['max_time']
+
 
     #velocity info
     velocity = sol.y[0]
