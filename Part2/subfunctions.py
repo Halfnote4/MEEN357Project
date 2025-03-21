@@ -665,8 +665,13 @@ def simulate_rover(rover, planet, experiment, end_event):
     distance_traveled = position[-1]
 
     #power
-    power = me
+    power = mechpower(velocity, rover) * 6
 
+    #battery energy
+    battery_energy = battenergy(t, velocity, rover)
+
+    #energy_per_distance
+    energy_per_distance = battery_energy / distance_traveled 
 
 
     #update rover telemetry
@@ -678,9 +683,9 @@ def simulate_rover(rover, planet, experiment, end_event):
         'distance_traveled' : distance_traveled,
         'max_velocity' : max_velocity,
         'average_velocity' : average_velocity,
-        'power' : 
-        'battery_energy' : 1, #Eimaan
-        'energy_per_distance' : 1, #Eimaan
+        'power' : power,
+        'battery_energy' : battery_energy,
+        'energy_per_distance' : energy_per_distance
         }
 
     return rover
