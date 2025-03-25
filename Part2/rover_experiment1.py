@@ -48,6 +48,9 @@ angle = 5 # degrees (terrain angle)
 Crr = 0.1
 
 from define_rovers import define_rover_1
+import pandas as pd #for the table
+
+
 rover, planet = define_rover_1() # this is what is given in Appendix A and B
 
 
@@ -69,8 +72,8 @@ end_event = {
 events = em.end_of_mission_event(end_event) #to call in simulate rover
 experiment = de.experiment1()[0] #to call in simulate rover
 
-rov = sf.simulate_rover(rover, planet, experiment, end_event)['telemetry'] #create var to call the updated telemetry data of the rover
-
+rover['telemetry'] = sf.simulate_rover(rover, planet, experiment, end_event)['telemetry'] #add the telemetry data for the rover to the dict
+rov = rover['telemetry'] #to call in the table of telemetry data for the rover, to make it easier to call
 
 #Subfigures, as requested:
 
@@ -102,3 +105,13 @@ axs[2].set_ylabel('Power (W)')
 
 plt.tight_layout()
 plt.show()
+
+#Tables containing the telemetry data for the rover:
+
+# Create a DataFrame for better visualization
+telemetry_table = pd.DataFrame(rover['telemetry'])
+
+#print(telemetry_table)
+
+# Export the telemetry table to a CSV file
+telemetry_table.to_csv('telemetry_data.csv') #to be able to easily pull up the telemetry data for the rover
