@@ -6,7 +6,7 @@
 ###########################################################################"""
 
 import math
-import end_of_mission_event as eme
+#import end_of_mission_event as eme
 import numpy as np
 import scipy.interpolate as spi
 import scipy.integrate as spitegrate
@@ -639,7 +639,7 @@ def simulate_rover(rover, planet, experiment, end_event):
     time = experiment['time_range']
     #initial conditions
     y0 = experiment['initial_conditions'].ravel()
-    events = eme.end_of_mission_event(end_event)
+    events = end_of_mission_event(end_event) #add eme. and uncomment at the top to run locally - Gradescope submission would not work
 
     #sol = (diff eq, time span, initial conditions, end condition/event, method-> for stiff system)
     sol = spitegrate.solve_ivp(fun, time, y0, method = 'BDF', events=events)
