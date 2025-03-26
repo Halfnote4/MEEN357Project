@@ -40,9 +40,7 @@ distance_traveled, max_velocity, average_velocity, battery_energy, and batt_ener
 Finally, please include a table of the rover[‘telemetry’] data for the fields: completion_time,
 distance_traveled, max_velocity, average_velocity, battery_energy, and batt_energy_per_distance.
 '''
-
-#Eddy/Eimaan as needed
-
+# Constants
 omega = 1 # rad/s (motor shaft speed)
 angle = 5 # degrees (terrain angle)
 Crr = 0.1

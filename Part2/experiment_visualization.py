@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import scipy.interpolate as spi
 import define_experiment as de
 
-#Eddy will do this
 experiment = de.experiment1()[0]
 alpha_dist = experiment['alpha_dist']
 alpha_deg = experiment['alpha_deg']

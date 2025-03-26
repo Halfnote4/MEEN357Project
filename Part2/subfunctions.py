@@ -384,7 +384,7 @@ def rover_dynamics(t, y, rover, planet, experiment):
 
 
     """
-    rover_dynamics - Eddy
+    rover_dynamics
 
     Computes the derivative of the state vector ([velocity, position]) for the rover given its current state. 
     It requires rover and experiment dictionary input parameters. It is intended to be passed to an ODE
@@ -465,12 +465,12 @@ def rover_dynamics(t, y, rover, planet, experiment):
 
 
 """
-mechpower - Eimaan
+mechpower
 
 """
 def mechpower(v, rover):
     """
-    mechpower - 
+    mechpower
     
     Calculates the power output of a single DC motor for each point in a velocity profile.
     
@@ -516,7 +516,7 @@ def mechpower(v, rover):
 
 
 """
-battenergy - Eimaan
+battenergy
 
 """
 
@@ -525,7 +525,7 @@ def battenergy(t, v, rover):
     
     
     """
-    battenergy - 
+    battenergy
     
     Computes how much electrical energy the rover battery uses over time, based on velocity data. 
     This function also takes into account the inefficiencies of converting electrical energy to mechanical energy in the motor.
@@ -582,22 +582,15 @@ def battenergy(t, v, rover):
 
 
 
-
-
-
-
-
-
-#import end_of_mission_event as eome
-
 def simulate_rover(rover, planet, experiment, end_event):
 
 
 
     """
-    simulate_rover - Eddy
+    simulate_rover
 
     Integrates the trajectory of the rover using input arguments.
+    Updates telemtry with the results of the simulation.
 
     Inputs:
         rover : dict, dictionary containing rover parameters
@@ -650,12 +643,9 @@ def simulate_rover(rover, planet, experiment, end_event):
 
     #sol = (diff eq, time span, initial conditions, end condition/event, method-> for stiff system)
     sol = spitegrate.solve_ivp(fun, time, y0, method = 'BDF', events=events)
-        #get y = ....
-
 
     #time
     time = sol.t
-
     
     #completion time
     completion_time = max(time)
