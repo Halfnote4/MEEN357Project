@@ -2,7 +2,14 @@
 
 Part 3:
 
-See Project folder
+Tasks:
+
+1 - Eddy
+2 - Eimaan
+3 - Eimaan
+4 - Eimaan
+5 - Eddy
+6 - Eddy
 
 
 
@@ -29,7 +36,8 @@ See Project folder
 
 
 
-Part 2
+
+Part 2 -DONE!
 
 Deadlines:
 
