@@ -85,7 +85,24 @@ def F_buoyancy_descent(edl_system,planet,altitude):
     
     return F
 
-def F_drag_descent(edl_system,planet,altitude,velocity):
+Task6 = True #change this to what you want to run, it will trigger MEF usage or not depending
+
+def F_drag_descent(edl_system,planet,altitude,velocity, Task6):
+    
+    ''' New Drag Function in Task 6'''
+
+    Mach = [0.25, 0.5, 0.65, 0.7, 0.8, 0.9, 0.95, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.8, 1.9, 2.0, 2.2, 2.5, 2.6]
+
+    MEF = [1.0, 1.0, 1.0, 0.97, 0.91, 0.72, 0.66, 0.75, 0.90, 0.96, 0.990, 0.999, 0.992, 0.98, 0.91, 0.85, 0.82, 0.75, 0.64, 0.62]
+
+    #MEF Model using the given array of values using cubic interpolation
+    MEFfun = interp1d(Mach, MEF, kind='cubic', fill_value='extrapolate')
+
+    def DragMod(Cd):
+        return MEFfun(v2M_Mars(velocity, altitude))*Cd #v2M_Mars is a function that converts velocity to Mach number using altitude
+
+    ''' If Commented out, this will produce some errors but if you change value to Task6 = True, it will produce task 6 plot'''
+
     
     # Compute the net drag force. 
     
@@ -104,7 +121,12 @@ def F_drag_descent(edl_system,planet,altitude,velocity):
     # If the heat shield has not been ejected, use that as our drag
     # contributor. Otherwise, use the sky crane.
     if not edl_system['heat_shield']['ejected']:
-        ACd_body = np.pi*(edl_system['heat_shield']['diameter']/2.0)**2*edl_system['heat_shield']['Cd']
+        if Task6:
+            ACd_body = np.pi*(edl_system['heat_shield']['diameter']/2.0)**2*DragMod(edl_system['heat_shield']['Cd'])
+        else:
+            ACd_body = np.pi*(edl_system['heat_shield']['diameter']/2.0)**2*edl_system['heat_shield']['Cd']
+    if Task6:
+        ACd_body = edl_system['sky_crane']['area']*DragMod(edl_system['sky_crane']['Cd'])
     else:
         ACd_body = edl_system['sky_crane']['area']*edl_system['sky_crane']['Cd']
 
@@ -112,7 +134,10 @@ def F_drag_descent(edl_system,planet,altitude,velocity):
     # if the parachute is in the deployed state, need to account for its area
     # in the drag calculation
     if edl_system['parachute']['deployed'] and not edl_system['parachute']['ejected']:
-        ACd_parachute = np.pi*(edl_system['parachute']['diameter']/2.0)**2*edl_system['parachute']['Cd']
+        if Task6:
+            ACd_parachute = np.pi*(edl_system['parachute']['diameter']/2.0)**2*DragMod(edl_system['parachute']['Cd'])
+        else:
+            ACd_parachute = np.pi*(edl_system['parachute']['diameter']/2.0)**2*edl_system['parachute']['Cd']
     else:
         ACd_parachute = 0.0
     
@@ -315,7 +340,7 @@ def edl_events(edl_system, mission_events):
     
     return events
 
-def edl_dynamics(t, y, edl_system, planet):
+def edl_dynamics(t, y, edl_system, planet, Task6):
 
     # Dynamics of EDL as it descends and lowers the rover to the surface. 
     # State vector: 
@@ -367,7 +392,7 @@ def edl_dynamics(t, y, edl_system, planet):
     # Forces EXCEPT THRUST acting on EDL System
     F_ext = F_gravity_descent(edl_system,planet) + \
             F_buoyancy_descent(edl_system,planet,altitude_edl) + \
-            F_drag_descent(edl_system,planet,altitude_edl,vel_edl)
+            F_drag_descent(edl_system,planet,altitude_edl,vel_edl, Task6)
 
     # Remove comment if you want some extra debugging display
     #print('\n')  
@@ -780,7 +805,7 @@ def simulate_edl(edl_system, planet, mission_events, tmax, ITER_INFO):
     while not(TERMINATE_SIM):
         
         # run simulation until an event occurs 
-        fun = lambda t, y: edl_dynamics(t, y, edl_system, planet)
+        fun = lambda t, y: edl_dynamics(t, y, edl_system, planet, Task6)
         sol = solve_ivp(fun, tspan, y0, method='DOP853', events=events, max_step=0.1)
         t_part = sol.t
         Y_part = sol.y

@@ -26,22 +26,10 @@ v_touch = np.zeros(len(parachute_diam)) # velocity at touch down
 success = np.zeros(len(parachute_diam)) # success of landing (1=success; 0=failure)
 
 Task6= True # True if you want to run Task 6, False if you want to run Task 5
-''' New Drag Function in Task 6'''
 
-
-Mach = [0.25, 0.5, 0.65, 0.7, 0.8, 0.9, 0.95, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.8, 1.9, 2.0, 2.2, 2.5, 2.6]
-
-MEF = [1.0, 1.0, 1.0, 0.97, 0.91, 0.72, 0.66, 0.75, 0.90, 0.96, 0.990, 0.999, 0.992, 0.98, 0.91, 0.85, 0.82, 0.75, 0.64, 0.62]
-
-#MEF Model using the given array of values using cubic interpolation
-MEF = np.interp1d(Mach, MEF, kind='cubic', fill_value="extrapolate")
-
-
-
-
-''' If Commented out, this will produce task 5 plot OR if you change value to Task6 = True, it will produce task 6 plot'''
 if Task6:
     Task6 = True
+#Reminder to change Task6 value to True or False depending on which you want to run
 
 for i in range(len(parachute_diam)):
     edl_system = redefine_edl_system(edl_system) #need to reset everything
@@ -93,4 +81,4 @@ axs[2].set_ylabel('Rover Landing Success')
 
 
 #Show plots
-#plt.show()
+plt.show()
