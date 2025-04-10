@@ -8,6 +8,7 @@ from subfunctions_EDL import*
 from redefine_edl_system import*
 import numpy as np
 import matplotlib.pyplot as plt
+import subfunctions_EDL 
 
 #overrides preivous values with prescribed values
 # initial conditions
@@ -27,8 +28,7 @@ success = np.zeros(len(parachute_diam)) # success of landing (1=success; 0=failu
 
 Task6= True # True if you want to run Task 6, False if you want to run Task 5
 
-if Task6:
-    Task6 = True
+Task6 = subfunctions_EDL.Task6
 #Reminder to change Task6 value to True or False depending on which you want to run
 
 for i in range(len(parachute_diam)):
@@ -60,22 +60,36 @@ fig0, axs = plt.subplots(3)
 
 #Subplot 1 - Simulated time (i.e., time at termination of simulation) vs. parachute diameter
 
-axs[0].plot(parachute_diam, t_touch, '--')
+
+
+if Task6:
+    axs[0].plot(parachute_diam, t_touch, '--', color='green')
+    axs[0].set_title('MEF Consideration', fontsize=10)
+else:
+    axs[0].plot(parachute_diam, t_touch, '--', color='blue')
+    axs[0].set_title('Initial', fontsize=10)
+
 axs[0].set_ylabel('Time (s)')
-axs[0].set_title('Initial', fontsize=10)
 axs[0].grid()
+
 
 #Subplot 2 - Rover speed (relative to ground) at simulation termination vs. parachute diameter
 
-
-axs[1].plot(parachute_diam, v_touch, '--')
+if Task6:
+    axs[1].plot(parachute_diam, v_touch, '--', color='green')
+else:
+    axs[1].plot(parachute_diam, v_touch, '--', color='blue')
 axs[1].set_ylabel('Rover Speed (m/s)')
 axs[1].grid()
 
 
 #Subplot 3- Rover landing success (1=success; 0=failure) vs. parachute diameter 
 
-axs[2].plot(parachute_diam, success, 'o--')
+if Task6:
+    axs[2].plot(parachute_diam, success, 'o--', color='green')
+else:
+    axs[2].plot(parachute_diam, success, 'o--', color='blue')
+
 axs[2].set_xlabel('Parachute Diameter (m)')
 axs[2].set_ylabel('Rover Landing Success')
 
