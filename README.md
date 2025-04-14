@@ -1,5 +1,17 @@
 #This will be for the express purpose of MEEN 357 project Spring 2025 semester
 
+Part 4:
+
+Tasks:
+
+
+
+
+
+
+
+
+
 Part 3:
 
 Tasks:
