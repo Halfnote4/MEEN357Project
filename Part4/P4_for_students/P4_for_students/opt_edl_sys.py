@@ -182,16 +182,16 @@ edl_system['rocket']['fuel_mass'] = xbest[4]
 # These lines save your design for submission for the rover competition.
 # You will want to change them to match your team information.
 
-edl_system['team_name'] = 'FunTeamName'  # change this to something fun for your team (or just your team number)
-edl_system['team_number'] = 99    # change this to your assigned team number (also change it below when saving your pickle file)
+edl_system['team_name'] = 'TeamRocket'  # change this to something fun for your team (or just your team number)
+edl_system['team_number'] = 1    # change this to your assigned team number (also change it below when saving your pickle file)
 
 # This will create a file that you can submit as your competition file.
-with open('SP25_501team99.pickle', 'wb') as handle:
+with open('SP25_502team1.pickle', 'wb') as handle:
     pickle.dump(edl_system, handle, protocol=pickle.HIGHEST_PROTOCOL)
 # *****************************************************************************
 
 #del edl_system
-#with open('challenge_design_team9999.pickle', 'rb') as handle:
+#with open('challenge_design_team1.pickle', 'rb') as handle:
 #    edl_system = pickle.load(handle)
 
 time_edl_run,_,edl_system = simulate_edl(edl_system,planet,mission_events,tmax,True)
