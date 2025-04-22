@@ -20,9 +20,9 @@ import sys
 planet = define_planet()
 edl_system = define_edl_system()
 mission_events = define_mission_events()
-edl_system = define_chassis(edl_system,'steel')
-edl_system = define_motor(edl_system,'base')
-edl_system = define_batt_pack(edl_system,'PbAcid-1', 10)
+edl_system = define_chassis(edl_system,'magnesium')
+edl_system = define_motor(edl_system,'speed')
+edl_system = define_batt_pack(edl_system,'PbAcid-1', 5)
 tmax = 5000
 
 # Overrides what might be in the loaded data to establish our desired
@@ -102,13 +102,13 @@ def callbackF(Xi):  # this is for SLSQP reporting during optimization
 
 ###############################################################################
 #call the trust-constr optimizer --------------------------------------------#
-#options = {'maxiter': 5, 
-            # 'initial_constr_penalty' : 5.0,
-            # 'initial_barrier_parameter' : 1.0,
-            #'verbose' : 3,
-          #  'disp' : True}
-#res = minimize(obj_f, x0, method='trust-constr', constraints=nonlinear_constraint, 
-                #options=options, bounds=bounds)
+options = {'maxiter': 5, 
+             'initial_constr_penalty' : 5.0,
+             'initial_barrier_parameter' : 1.0,
+            'verbose' : 3,
+            'disp' : True}
+res = minimize(obj_f, x0, method='trust-constr', constraints=nonlinear_constraint, 
+                options=options, bounds=bounds)
 # end call to the trust-constr optimizer -------------------------------------#
 ###############################################################################
 
@@ -123,9 +123,9 @@ def callbackF(Xi):  # this is for SLSQP reporting during optimization
 
 ###############################################################################
 # call the differential evolution optimizer ----------------------------------#
-popsize=2 # define the population size
-maxiter=1 # define the maximum number of iterations
-res = differential_evolution(obj_f, bounds=bounds, constraints=nonlinear_constraint, popsize=popsize, maxiter=maxiter, disp=True, polish = False) 
+#popsize=2 # define the population size
+#maxiter=1 # define the maximum number of iterations
+#res = differential_evolution(obj_f, bounds=bounds, constraints=nonlinear_constraint, popsize=popsize, maxiter=maxiter, disp=True, polish = False) 
 # end call the differential evolution optimizer ------------------------------#
 ###############################################################################
 

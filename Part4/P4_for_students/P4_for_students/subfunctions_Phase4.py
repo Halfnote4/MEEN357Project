@@ -177,11 +177,11 @@ def define_planet():
 
 def define_rover():
     # Initialize Rover dict 
-    wheel = {'radius':0.30,
+    wheel = {'radius':0.4,
              'mass':1}
     speed_reducer = {'type':'reverted',
                      'diam_pinion':0.04,
-                     'diam_gear':0.07,
+                     'diam_gear':0.09,
                      'mass':1.5}
     motor = {'torque_stall':170,
              'torque_noload':0,
@@ -195,7 +195,7 @@ def define_rover():
     #############################################
     
     
-    chassis = {'mass':659}
+    chassis = {'mass':700}
     science_payload = {'mass':75}
     power_subsys = {'mass':90}
     
