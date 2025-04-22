@@ -20,7 +20,7 @@ import sys
 planet = define_planet()
 edl_system = define_edl_system()
 mission_events = define_mission_events()
-edl_system = define_chassis(edl_system,'carbon')
+edl_system = define_chassis(edl_system,'steel')
 edl_system = define_motor(edl_system,'base')
 edl_system = define_batt_pack(edl_system,'PbAcid-1', 10)
 tmax = 5000
@@ -59,7 +59,8 @@ max_batt_energy_per_meter = edl_system['rover']['power_subsys']['battery']['capa
 bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290])
 
 # initial guess
-x0 = np.array([19, .7, 550.0, 0.09, 250.0]) 
+x0 = np.array([19, 0.65, 500, 0.06, 240])
+
 
 # lambda for the objective function
 obj_f = lambda x: obj_fun_time(x,edl_system,planet,mission_events,tmax,
