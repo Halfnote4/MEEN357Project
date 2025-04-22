@@ -222,7 +222,7 @@ def define_edl_system():
     # parachute is first deployed to keep things simpler.  
     parachute = {'deployed' : True,  # true means it has been deployed but not ejected
                  'ejected' : False,  # true means parachute no longer is attached to system
-                 'diameter' : 16.25, # [m] (MSL is about 16 m)
+                 'diameter' : 17.5, # [m] (MSL is about 16 m)
                  'Cd' : 0.615,       # [-] (0.615 is nominal for subsonic)
                  'cost_per_A' : 1e3, # [$US/m^2] cost proportional to parachute area
                  'mass' : 185.0}     # [kg] (this is a wild guess -- no data found)
