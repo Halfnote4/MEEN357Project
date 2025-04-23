@@ -177,11 +177,11 @@ def define_planet():
 
 def define_rover():
     # Initialize Rover dict 
-    wheel = {'radius':0.4,
+    wheel = {'radius':0.30,
              'mass':1}
     speed_reducer = {'type':'reverted',
                      'diam_pinion':0.04,
-                     'diam_gear':0.12,
+                     'diam_gear':0.07,
                      'mass':1.5}
     motor = {'torque_stall':170,
              'torque_noload':0,
@@ -195,7 +195,7 @@ def define_rover():
     #############################################
     
     
-    chassis = {'mass':700}
+    chassis = {'mass':659}
     science_payload = {'mass':75}
     power_subsys = {'mass':90}
     
@@ -222,7 +222,7 @@ def define_edl_system():
     # parachute is first deployed to keep things simpler.  
     parachute = {'deployed' : True,  # true means it has been deployed but not ejected
                  'ejected' : False,  # true means parachute no longer is attached to system
-                 'diameter' : 17.5, # [m] (MSL is about 16 m)
+                 'diameter' : 16.25, # [m] (MSL is about 16 m)
                  'Cd' : 0.615,       # [-] (0.615 is nominal for subsonic)
                  'cost_per_A' : 1e3, # [$US/m^2] cost proportional to parachute area
                  'mass' : 185.0}     # [kg] (this is a wild guess -- no data found)
@@ -232,7 +232,7 @@ def define_edl_system():
               'structure_mass' : 8.0,                 # [kg] everything not fuel
               'initial_fuel_mass' : 230.0,            # [kg]  230.0
               'cost_per_kg' : 1500,                   # [$US/kg] rocket cost per kg of fueld
-              'fuel_mass' : 200.0,                    # [kg] current fuel mass (<= initial)
+              'fuel_mass' : 230.0,                    # [kg] current fuel mass (<= initial)
               'effective_exhaust_velocity' : 4500.0,  # [m/s]
               'max_thrust' : 3100.0,                  # [N]  
               'min_thrust' : 40.0}                    # [N]

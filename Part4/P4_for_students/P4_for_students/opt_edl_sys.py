@@ -41,8 +41,8 @@ min_strength=40000
 max_cost = 7.2e6
 max_batt_energy_per_meter = edl_system['rover']['power_subsys']['battery']['capacity']/1000
 
-print(edl_system['rover']['chassis']['strength'])
-print(get_cost_edl(edl_system))
+#print(edl_system['rover']['chassis']['strength']) 
+# print(get_cost_edl(edl_system))
 # ******************************
 # DEFINING THE OPTIMIZATION PROBLEM
 # ****
@@ -192,9 +192,9 @@ with open('SP25_502team1.pickle', 'wb') as handle:
     pickle.dump(edl_system, handle, protocol=pickle.HIGHEST_PROTOCOL)
 # *****************************************************************************
 
-del edl_system
-with open('challenge_design_team1.pickle', 'rb') as handle:
-    edl_system = pickle.load(handle)
+#del edl_system
+#with open('challenge_design_team1.pickle', 'rb') as handle:
+    #edl_system = pickle.load(handle)
 
 time_edl_run,_,edl_system = simulate_edl(edl_system,planet,mission_events,tmax,True)
 time_edl = time_edl_run[-1]
