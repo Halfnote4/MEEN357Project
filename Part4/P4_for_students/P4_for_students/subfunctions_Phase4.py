@@ -181,7 +181,7 @@ def define_rover():
              'mass':1}
     speed_reducer = {'type':'reverted',
                      'diam_pinion':0.04,
-                     'diam_gear':0.09,
+                     'diam_gear':0.12,
                      'mass':1.5}
     motor = {'torque_stall':170,
              'torque_noload':0,
@@ -232,7 +232,7 @@ def define_edl_system():
               'structure_mass' : 8.0,                 # [kg] everything not fuel
               'initial_fuel_mass' : 230.0,            # [kg]  230.0
               'cost_per_kg' : 1500,                   # [$US/kg] rocket cost per kg of fueld
-              'fuel_mass' : 230.0,                    # [kg] current fuel mass (<= initial)
+              'fuel_mass' : 200.0,                    # [kg] current fuel mass (<= initial)
               'effective_exhaust_velocity' : 4500.0,  # [m/s]
               'max_thrust' : 3100.0,                  # [N]  
               'min_thrust' : 40.0}                    # [N]

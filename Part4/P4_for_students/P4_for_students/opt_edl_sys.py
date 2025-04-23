@@ -22,7 +22,7 @@ edl_system = define_edl_system()
 mission_events = define_mission_events()
 edl_system = define_chassis(edl_system,'magnesium')
 edl_system = define_motor(edl_system,'speed')
-edl_system = define_batt_pack(edl_system,'PbAcid-1', 5)
+edl_system = define_batt_pack(edl_system,'PbAcid-1', 6)
 tmax = 5000
 
 # Overrides what might be in the loaded data to establish our desired
@@ -192,9 +192,9 @@ with open('SP25_502team1.pickle', 'wb') as handle:
     pickle.dump(edl_system, handle, protocol=pickle.HIGHEST_PROTOCOL)
 # *****************************************************************************
 
-#del edl_system
-#with open('challenge_design_team1.pickle', 'rb') as handle:
-#    edl_system = pickle.load(handle)
+del edl_system
+with open('challenge_design_team1.pickle', 'rb') as handle:
+    edl_system = pickle.load(handle)
 
 time_edl_run,_,edl_system = simulate_edl(edl_system,planet,mission_events,tmax,True)
 time_edl = time_edl_run[-1]
