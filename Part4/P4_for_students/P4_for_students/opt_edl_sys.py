@@ -60,7 +60,7 @@ print(get_cost_edl(edl_system))
 bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290])
 
 # initial guess
-x0 = np.array([19, 0.7, 550, 0.09, 250]) 
+x0 = np.array([18, 0.65, 300, 0.06, 230])
 
 
 # lambda for the objective function
