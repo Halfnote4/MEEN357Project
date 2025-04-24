@@ -60,7 +60,7 @@ max_batt_energy_per_meter = edl_system['rover']['power_subsys']['battery']['capa
 bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290])
 
 # initial guess
-x0 = np.array([18, 0.65, 300, 0.06, 230])
+x0 = np.array([18, 0.65, 300, 0.07, 230])
 
 
 # lambda for the objective function
