@@ -21,7 +21,7 @@ planet = define_planet()
 edl_system = define_edl_system()
 mission_events = define_mission_events()
 edl_system = define_chassis(edl_system,'magnesium')
-edl_system = define_motor(edl_system,'speed')
+edl_system = define_motor(edl_system,'torque_he')
 edl_system = define_batt_pack(edl_system,'PbAcid-1', 6)
 tmax = 5000
 
@@ -60,7 +60,8 @@ max_batt_energy_per_meter = edl_system['rover']['power_subsys']['battery']['capa
 bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290])
 
 # initial guess
-x0 = np.array([18, 0.65, 300, 0.07, 230])
+#x0 = np.array([18, 0.65, 300, 0.07, 230])
+x0 = np.array([16.687, 0.7, 288.1089, 0.05, 271.27])
 
 
 # lambda for the objective function
@@ -102,13 +103,13 @@ def callbackF(Xi):  # this is for SLSQP reporting during optimization
 
 ###############################################################################
 #call the trust-constr optimizer --------------------------------------------#
-options = {'maxiter': 5, 
-             'initial_constr_penalty' : 5.0,
-             'initial_barrier_parameter' : 1.0,
-            'verbose' : 3,
-            'disp' : True}
-res = minimize(obj_f, x0, method='trust-constr', constraints=nonlinear_constraint, 
-                options=options, bounds=bounds)
+#options = {'maxiter': 5, 
+         #    'initial_constr_penalty' : 5.0,
+         #    'initial_barrier_parameter' : 1.0,
+          #   'verbose' : 3,
+          #  'disp' : True}
+#res = minimize(obj_f, x0, method='trust-constr', constraints=nonlinear_constraint, 
+            #    options=options, bounds=bounds)
 # end call to the trust-constr optimizer -------------------------------------#
 ###############################################################################
 
@@ -131,34 +132,34 @@ res = minimize(obj_f, x0, method='trust-constr', constraints=nonlinear_constrain
 
 ###############################################################################
 # call the COBYLA optimizer --------------------------------------------------#
-# cobyla_bounds = [[14, 19], [0.2, 0.7], [250, 800], [0.05, 0.12], [100, 290]]
-# #construct the bounds in the form of constraints
-# cons_cobyla = []
-# for factor in range(len(cobyla_bounds)):
-    # lower, upper = cobyla_bounds[factor]
-    # l = {'type': 'ineq',
-          # 'fun': lambda x, lb=lower, i=factor: x[i] - lb}
-    # u = {'type': 'ineq',
-          # 'fun': lambda x, ub=upper, i=factor: ub - x[i]}
-    # cons_cobyla.append(l)
-    # cons_cobyla.append(u)
-    # cons_cobyla.append(ineq_cons)  # the rest of the constraints
-# options = {'maxiter': 50, 
-            # 'disp' : True}
-# res = minimize(obj_f, x0, method='COBYLA', constraints=cons_cobyla, options=options)
+#cobyla_bounds = [[14, 19], [0.2, 0.7], [250, 800], [0.05, 0.12], [100, 290]]
+# construct the bounds in the form of constraints
+#cons_cobyla = []
+#for factor in range(len(cobyla_bounds)):
+ #   lower, upper = cobyla_bounds[factor]
+ #   l = {'type': 'ineq',
+  #        'fun': lambda x, lb=lower, i=factor: x[i] - lb}
+   # u = {'type': 'ineq',
+    #      'fun': lambda x, ub=upper, i=factor: ub - x[i]}
+  #  cons_cobyla.append(l)
+   # cons_cobyla.append(u)
+    #cons_cobyla.append(ineq_cons)  # the rest of the constraints
+#options = {'maxiter': 50, 
+     #       'disp' : True}
+#res = minimize(obj_f, x0, method='COBYLA', constraints=cons_cobyla, options=options)
 # end call to the COBYLA optimizer -------------------------------------------#
 ###############################################################################
 
 
 # check if we have a feasible solution 
-c = constraints_edl_system(res.x,edl_system,planet,mission_events,tmax,experiment,
+c = constraints_edl_system(x0,edl_system,planet,mission_events,tmax,experiment,
                            end_event,min_strength,max_rover_velocity,max_cost,
                            max_batt_energy_per_meter)
 
 feasible = np.max(c - np.zeros(len(c))) <= 0
 if feasible:
-    xbest = res.x
-    fbest = res.fun
+    xbest = x0
+    #fbest = res.fun
 else:  # nonsense to let us know this did not work
     xbest = [99999, 99999, 99999, 99999, 99999]
     fval = [99999]
